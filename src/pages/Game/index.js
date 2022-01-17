@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { Question } from "../../components"
 
 const Game = () => {
@@ -7,8 +7,9 @@ const Game = () => {
     const [ countdown, setCountdown ] = useState(10)
     const [ questionNum, setQuestionNum ] = useState(0)
     const [ correctIndex, setCorrectIndex ] = useState()
-
-    const navigate = useNavigate()
+    const [ playing, setPlaying ] = useState(true)
+    const [ isSubmitted, setIsSubmitted ] = useState(false)
+    const [ score, setScore ] = useState(0)
 
     const params = useParams();
 
@@ -49,21 +50,41 @@ const Game = () => {
     })
 
     useEffect(() => {
+        if (questionNum === questions.length) {
+            setPlaying(false)
+        }
         setQuestion(questions[questionNum])
         setCountdown(10)
+        setIsSubmitted(false)
         setCorrectIndex(Math.floor(Math.random() * 4))
+        console.log(score)
     }, [questionNum])
-    
-    if (questionNum === questions.length) {
-        navigate("/results")
-    }
     
     return (
         <div id="game-container">
             <p>game id: {params.lobbyId}</p>
-            <p>Time remaining: {countdown} seconds</p>
-            {questions[questionNum] && <p>Category: {questions[questionNum].category}</p>}
-            {question && <Question questionData={question} correctIndex={correctIndex}/>}
+            { playing &&
+                <>
+                    <p>Time remaining: {countdown} seconds</p>
+                    { questions[questionNum] && <p>Category: {questions[questionNum].category}</p>}
+                    { question && !isSubmitted && 
+                        <Question
+                            questionData={question}
+                            correctIndex={correctIndex}
+                            toggleSubmitted={setIsSubmitted}
+                            updateScore={setScore}
+                        />
+                    }
+                    { question && isSubmitted && 
+                         <p>Waiting...</p>   
+                    }
+                </>
+            }
+            { !playing && 
+                <>
+                    <button><Link to="/results">See results</Link></button>
+                </>
+            }
         </div>
     )
 }
