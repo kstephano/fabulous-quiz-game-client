@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { getPlayers } from '../../helpers/index';
 import io from 'socket.io-client';
 import { useSelector } from 'react-redux';
 
@@ -12,12 +11,14 @@ const Lobby = () => {
     const serverEndpoint = "http://localhost:4000";
 
     useEffect(() => {
-        // setSocket(io(serverEndpoint));
-
-        const socket = io(serverEndpoint);
-        socket.on("connect", () => {
+        const newSocket = io(serverEndpoint);
+        console.log(newSocket);
+        setSocket(newSocket);
+        console.log(socket);
+        socket.on("connection", () => {
             console.log("connected");
-        })
+        });
+    
         /*
         socket.emit("joinLobby", name);
 
@@ -29,9 +30,7 @@ const Lobby = () => {
 
         // Disconnect socket when component unmounts
         return () => {
-            if (socket != null) {
-                socket.disconnect();
-            }
+            socket.disconnect();
         }
     }, []);
 
