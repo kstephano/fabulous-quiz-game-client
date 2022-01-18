@@ -8,21 +8,47 @@ const socket = io(serverEndpoint);
 
 const Lobby = () => {
     const [ players, setPlayers ] = useState([]);
-    const name = useSelector(state => state.name);
+    const [ messages, setMessages ] = useState(["hi"]);
     const params = useParams();
+    const name = useSelector(state => state.user.name);
+    const isHost = useSelector(state => state.user.isHost);
+    const lobbyId = params.lobbyId;
+
+    console.log(isHost);
+    console.log(name);
+
+    const joinRoom = () => {
+        // make a socket room if host
+        if (isHost) { 
+            socket.emit("create-lobby", { username: name, lobbyId: lobbyId });
+            socket.on("lobby-created", (msg) => { 
+                console.log(msg);
+                setMessages(messages => [ ...messages, msg ]);
+            });
+        // otherwise, join a pre-existing socket room    
+        } else {
+            socket.emit("request-join-lobby", { username: name, lobbyId: lobbyId });
+
+            socket.on("entry-permission", (lobbyId) => {
+                console.log(`Joined lobby ${lobbyId}`);
+                setMessages(messages => [ ...messages, `Joined lobby ${lobbyId}`]);
+            });
+        }
+
+        socket.on("new-player-joining", ({ username, lobbyId, roomCount }) => {
+            console.log(`${username} has joined lobby ${lobbyId}`);
+            console.log(`There are now ${roomCount} players in the lobby`)
+            setMessages(messages => [ ...messages, `${username} has joined lobby ${lobbyId}` ]);
+            setMessages(messages => [ ...messages, `There are now ${roomCount} players in the lobby` ]);
+        });
+    }
+
+    socket.on("connected", (msg) => {
+        console.log(msg);
+    });
 
     useEffect(() => {
-        socket.on("connection", () => {
-            console.log("connected");
-        });
-        /*
-        socket.emit("joinLobby", name);
-
-        // add new player to the list when "newPlayer" event is received from the server
-        socket.on('newPlayer', (name) => {
-            setPlayers([...players, name]);
-        });
-        */
+        joinRoom();
 
         // Disconnect socket when component unmounts
         return () => {
@@ -31,6 +57,7 @@ const Lobby = () => {
     }, []);
 
     const renderPlayers = () => players.map((player, index) => <li key={index}>{player.name}</li>);
+    const renderMessages = () => messages.map((message, index) => <p className='message' key={index}>{message}</p>)
 
     return (
         <div className='lobby-container'>
@@ -38,8 +65,11 @@ const Lobby = () => {
             <div className='players-container'>
                 <p>{players.length}/{}</p>
                 <ul>
-                    {renderPlayers}
+                    {renderPlayers()}
                 </ul>
+            </div>
+            <div className='message-container'>
+                {renderMessages()}
             </div>
             <div className='invite-friends-container'>
                 <h2>Invite your friends!</h2>
