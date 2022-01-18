@@ -1,5 +1,7 @@
 import React from "react";
 
+import "./style.css"
+
 const Answer = ({answer, index, correct, handleCorrect}) => {
     return (
         <div className="answer">
@@ -8,10 +10,9 @@ const Answer = ({answer, index, correct, handleCorrect}) => {
                 name="answer"
                 value={answer} 
                 id={"answer" + (index + 1)} 
-                // correct={correct ? "correct" : "incorrect"}
                 onClick={() => handleCorrect(correct)}
             />
-            <label htmlFor={"answer" + index}>{answer}</label>
+            <label htmlFor={"answer" + (index + 1)}>{answer}</label>
         </div>
     )
 }

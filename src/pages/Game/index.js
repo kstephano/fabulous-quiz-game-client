@@ -2,9 +2,11 @@ import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Question } from "../../components"
 
+import "./style.css"
+
 const Game = () => {
     const [ question, setQuestion ] = useState()
-    const [ countdown, setCountdown ] = useState(10)
+    const [ countdown, setCountdown ] = useState(120)
     const [ questionNum, setQuestionNum ] = useState(0)
     const [ correctIndex, setCorrectIndex ] = useState()
     const [ playing, setPlaying ] = useState(true)
@@ -54,7 +56,7 @@ const Game = () => {
             setPlaying(false)
         }
         setQuestion(questions[questionNum])
-        setCountdown(10)
+        setCountdown(120)
         setIsSubmitted(false)
         setCorrectIndex(Math.floor(Math.random() * 4))
         console.log(score)
@@ -62,11 +64,10 @@ const Game = () => {
     
     return (
         <div id="game-container">
-            <p>game id: {params.lobbyId}</p>
+            <p className="game-id">Game ID: {params.lobbyId}</p>
             { playing &&
                 <>
-                    <p>Time remaining: {countdown} seconds</p>
-                    { questions[questionNum] && <p>Category: {questions[questionNum].category}</p>}
+                    <p className="countdown">Time remaining: {countdown} seconds</p>
                     { question && !isSubmitted && 
                         <Question
                             questionData={question}
@@ -76,7 +77,7 @@ const Game = () => {
                         />
                     }
                     { question && isSubmitted && 
-                         <p>Waiting...</p>   
+                         <p className="question">Waiting...</p>   
                     }
                 </>
             }

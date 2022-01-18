@@ -3,3 +3,4 @@ export { default as Host } from './Host';
 export { default as Leaderboard } from "./Leaderboard"
 export { default as Game } from "./Game"
 export { default as Results } from "./Results"
+export { default as Lobby } from "./Lobby"

@@ -1,5 +1,7 @@
 import React, { useState } from "react";
-import {Answer} from ".."
+import { Answer } from ".."
+
+import "./style.css"
 
 const Question = ({questionData, correctIndex, toggleSubmitted, updateScore}) => {
     const [ isCorrect, setIsCorrect ] = useState(false)
@@ -30,12 +32,15 @@ const Question = ({questionData, correctIndex, toggleSubmitted, updateScore}) =>
     }
 
     return (
-        <div className="question">
-            <p>{questionData.question}</p>
-            <form onSubmit={handleSubmit}>
-                {answerOptions}
-                <input type="submit" value="Submit answer"/>
-            </form>
+        <div className="question-div">
+            <p className="category">{questionData.category}</p>
+            <p className="question">{questionData.question}</p>
+            <div className="form-container">
+                <form onSubmit={handleSubmit} className="answer-form">
+                    {answerOptions}
+                    <input type="submit" value="Submit answer" className="submit-answer-button"/>
+                </form>
+            </div>
         </div>
     );
 }
