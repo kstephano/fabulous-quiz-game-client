@@ -10,8 +10,10 @@ const Game = () => {
     const [ playing, setPlaying ] = useState(true)
     const [ isSubmitted, setIsSubmitted ] = useState(false)
     const [ score, setScore ] = useState(0)
-
+    const [ socket, setSocket ] = useState(null);
     const params = useParams();
+
+    if (socket === null) setSocket(params.socket);
 
     const questions = [{
         category: "Mythology",
@@ -48,6 +50,13 @@ const Game = () => {
 		const int = setInterval(cycle, 1000);
 		return () => clearInterval(int);
     })
+
+    useEffect(() => {
+        // Disconnect socket when component unmounts
+        return () => {
+        socket.disconnect();
+        }
+    }, []);
 
     useEffect(() => {
         if (questionNum === questions.length) {
