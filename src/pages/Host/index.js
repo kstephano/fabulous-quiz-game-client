@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { categories, difficulties, times } from '../../data/index';
-import { getLobbyId } from '../../helpers/index';
 import { setHost, setLobbyOptions } from '../../redux/actions';
 
 const Host = () => {
@@ -13,8 +12,8 @@ const Host = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const createLobby = () => {
-        const lobbyId = getLobbyId();
+    const createLobby = e => {
+        e.preventDefault();
         dispatch(setHost(true));
         dispatch(setLobbyOptions({ 
             numOfQuestions: rounds,
@@ -22,7 +21,7 @@ const Host = () => {
             difficulty: difficulty,
             time: time 
         }));
-        navigate(`/lobby/${lobbyId}`);
+        navigate(`/lobby`);
     }
 
     const renderOptions = (list) => list.map((item, key) => <option key={key} value={item}>{item}</option>);
