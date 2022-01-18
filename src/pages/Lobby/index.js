@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
-const io = require('socket.io-client');
-const serverEndpoint = "http://localhost:4000";
-const socket = io(serverEndpoint);
-
 const Lobby = () => {
+    const [ socket, setSocket ] = useState(null);
     const [ players, setPlayers ] = useState([]);
     const [ messages, setMessages ] = useState(["hi"]);
     const params = useParams();
+    const navigate = useNavigate();
     const name = useSelector(state => state.user.name);
     const isHost = useSelector(state => state.user.isHost);
     const lobbyId = params.lobbyId;
@@ -17,7 +15,7 @@ const Lobby = () => {
     console.log(isHost);
     console.log(name);
 
-    const joinRoom = () => {
+    const joinRoom = (socket) => {
         // make a socket room if host
         if (isHost) { 
             socket.emit("create-lobby", { username: name, lobbyId: lobbyId });
@@ -43,18 +41,22 @@ const Lobby = () => {
         });
     }
 
-    socket.on("connected", (msg) => {
-        console.log(msg);
-    });
 
     useEffect(() => {
-        joinRoom();
-
-        // Disconnect socket when component unmounts
-        return () => {
-            socket.disconnect();
-        }
+        const io = require('socket.io-client');
+        const serverEndpoint = "http://localhost:4000";
+        const socket = io(serverEndpoint);
+        socket.on("connected", (msg) => {
+            console.log(msg);
+        });
+        if (socket === null) setSocket(socket);
+        console.log(socket);
+        joinRoom(socket);
     }, []);
+
+    const startGame = () => {
+        navigate(`/game/${socket}`);
+    }
 
     const renderPlayers = () => players.map((player, index) => <li key={index}>{player.name}</li>);
     const renderMessages = () => messages.map((message, index) => <p className='message' key={index}>{message}</p>)
@@ -71,6 +73,7 @@ const Lobby = () => {
             <div className='message-container'>
                 {renderMessages()}
             </div>
+            <button onClick={startGame} disabled={!isHost}>Start Game</button>
             <div className='invite-friends-container'>
                 <h2>Invite your friends!</h2>
                 <p className='lobby-id'>{params.lobbyId}</p>
