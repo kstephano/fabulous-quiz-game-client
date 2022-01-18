@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Question } from "../../components"
 
+import "./style.css"
+
 const Game = () => {
     const [ question, setQuestion ] = useState()
     const [ countdown, setCountdown ] = useState(10)
@@ -62,11 +64,10 @@ const Game = () => {
     
     return (
         <div id="game-container">
-            <p>game id: {params.lobbyId}</p>
+            <p className="game-id">Game ID: {params.lobbyId}</p>
             { playing &&
                 <>
-                    <p>Time remaining: {countdown} seconds</p>
-                    { questions[questionNum] && <p>Category: {questions[questionNum].category}</p>}
+                    <p className="countdown">Time remaining: {countdown} seconds</p>
                     { question && !isSubmitted && 
                         <Question
                             questionData={question}
@@ -76,7 +77,9 @@ const Game = () => {
                         />
                     }
                     { question && isSubmitted && 
-                         <p>Waiting...</p>   
+                        <div className="question-div">
+                            <p>Waiting...</p>
+                        </div>
                     }
                 </>
             }
