@@ -1,17 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useModal } from 'react-hooks-use-modal';
+import { setLobbyId } from '../../redux/actions';
 
 const Lobby = () => {
     const [ socket, setSocket ] = useState(null);
     const [ players, setPlayers ] = useState([]);
     const [ messages, setMessages ] = useState(["hi"]);
-    const params = useParams();
+
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const name = useSelector(state => state.user.name);
     const isHost = useSelector(state => state.user.isHost);
     const lobbyId = useSelector(state => state.user.lobbyId);
     const category = useSelector(state => state.lobby.category);
+    const [ Modal, open, close ] = useModal('root', { preventScroll: true, closeOnOverlayClick: false });
+
 
     console.log(isHost);
     console.log(name);
@@ -21,10 +26,10 @@ const Lobby = () => {
         // make a socket room if host
         if (isHost) { 
             socket.emit("create-lobby", { username: name, category: category });
-            socket.on("lobby-created", (lobbyId) => { 
-                setLobbyId(lobbyId);
+            socket.on("lobby-created", ({ lobbyId }) => { 
+                dispatch(setLobbyId(lobbyId));
                 console.log(`Lobby created by ${name}`);
-                setMessages(messages => [ ...messages, msg ]);
+                setMessages(messages => [ ...messages, `Lobby created by ${name}` ]);
             });
             setPlayers(players => [...players, name]);
             console.log(players);
@@ -39,13 +44,17 @@ const Lobby = () => {
                 console.log(players);
                 setMessages(messages => [ ...messages, `Joined lobby ${lobbyId}`]);
             });
+
+            socket.on("lobby-id-invalid", () => {
+                open();
+            });
         }
 
         socket.on("new-player-joining", ({ newPlayer, roomCount }) => {
-            const { username, lobbyId } = newPlayer;
-            console.log(`${username} has joined lobby ${lobbyId}`);
+            const { username, lobby_id } = newPlayer;
+            console.log(`${username} has joined lobby ${lobby_id}`);
             console.log(`There are now ${roomCount} players in the lobby`)
-            setMessages(messages => [ ...messages, `${username} has joined lobby ${lobbyId}` ]);
+            setMessages(messages => [ ...messages, `${username} has joined lobby ${lobby_id}` ]);
             setMessages(messages => [ ...messages, `There are now ${roomCount} players in the lobby` ]);
         });
     }
@@ -78,6 +87,12 @@ const Lobby = () => {
     return (
         <div className='lobby-container'>
             <h1>Lobby</h1>
+
+            <Modal className="pop-up">
+                <h2>Lobby does not exist</h2>
+                <button id="close-pop-up-btn" onClick={() => navigate('/')}>Go back</button>
+            </Modal>
+
             <div className='players-container'>
                 <p>{players.length}/{}</p>
                 <ul>
@@ -90,7 +105,7 @@ const Lobby = () => {
             <button onClick={startGame} disabled={!isHost}>Start Game</button>
             <div className='invite-friends-container'>
                 <h2>Invite your friends!</h2>
-                <p className='lobby-id'>{params.lobbyId}</p>
+                <p className='lobby-id'>{lobbyId}</p>
             </div>
         </div>
     )
