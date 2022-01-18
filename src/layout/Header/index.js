@@ -1,10 +1,11 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 const Header = () => {
+    const navigate = useNavigate();
     return (
         <header>
-            <h1>Fabulous Quiz Game</h1>
+            <h1 onClick={() => navigate('/')}>Fabulous Quiz Game</h1>
             <nav>
                 <NavLink to="/">Play</NavLink>
                 <NavLink to="/leaderboard">Leaderboard</NavLink>
