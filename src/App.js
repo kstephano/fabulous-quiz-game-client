@@ -1,8 +1,9 @@
 import React from 'react';
 import { Routes, Route } from "react-router-dom";
-import { Home, Host, Leaderboard, Game, Results } from "./pages"
+import { Home, Host, Leaderboard, Game, Results, Lobby } from "./pages"
 import { Header } from "./layout"
-import Lobby from './pages/Lobby';
+
+import "./App.css"
 
 const App = () => {
     return (

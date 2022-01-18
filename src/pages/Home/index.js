@@ -28,17 +28,23 @@ const Home = () => {
         }
     }
 
+    const handleHost = () => {
+        if (nameInput) {
+            navigate("/host")
+        }
+    }
+
     return (
-        <div className='home-container'>
-            <input type="text" name='name' placeholder="Enter a name" value={nameInput} onChange={handleInput(setNameInput)} required></input>
-            {!isJoin && <button onClick={handleJoin}>Join a game</button>}
+        <div id='home-container'>
+            <input type="text" name='name' placeholder="Enter your name" value={nameInput} onChange={handleInput(setNameInput)} required></input>
+            {!isJoin && <button onClick={handleJoin} className="join-button">Join a game</button>}
             { isJoin && 
                 <>
                     <input type="text" name="lobbyId" placeholder="Lobby ID" value={lobbyIdInput} onChange={handleInput(setLobbyIdInput)} required></input>
-                    <button onClick={handlePlay}>Play</button>
+                    <button onClick={handlePlay} className="join-button">Play!</button>
                 </>
             }
-            <button><Link className='main-btn' to={nameInput ? "/host" : "/"}>Host a game</Link></button>
+            <button onClick={handleHost} className="host-button">Host a game</button>
         </div>
     )
 }

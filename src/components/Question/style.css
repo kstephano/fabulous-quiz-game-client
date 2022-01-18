@@ -1,0 +1,22 @@
+.question-div {
+    background-color: white;
+    padding: 5px 10px;
+}
+
+.category {
+    font-weight: 800;
+    margin-top: 10px;
+}
+
+.question {
+    margin: 10px auto;
+}
+
+.form-container {
+    display: flex;
+    justify-items: center;
+}
+
+.answer-form {
+    margin: 0 auto 10px auto;
+}
