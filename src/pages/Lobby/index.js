@@ -10,30 +10,39 @@ const Lobby = () => {
     const navigate = useNavigate();
     const name = useSelector(state => state.user.name);
     const isHost = useSelector(state => state.user.isHost);
-    const lobbyId = params.lobbyId;
+    const lobbyId = useSelector(state => state.user.lobbyId);
+    const category = useSelector(state => state.lobby.category);
 
     console.log(isHost);
     console.log(name);
+    console.log(category);
 
     const joinRoom = (socket) => {
         // make a socket room if host
         if (isHost) { 
-            socket.emit("create-lobby", { username: name, lobbyId: lobbyId });
-            socket.on("lobby-created", (msg) => { 
-                console.log(msg);
+            socket.emit("create-lobby", { username: name, category: category });
+            socket.on("lobby-created", (lobbyId) => { 
+                setLobbyId(lobbyId);
+                console.log(`Lobby created by ${name}`);
                 setMessages(messages => [ ...messages, msg ]);
             });
+            setPlayers(players => [...players, name]);
+            console.log(players);
         // otherwise, join a pre-existing socket room    
         } else {
+            console.log(lobbyId)
             socket.emit("request-join-lobby", { username: name, lobbyId: lobbyId });
 
-            socket.on("entry-permission", (lobbyId) => {
+            socket.on("entry-permission", ({ lobbyId, players }) => {
                 console.log(`Joined lobby ${lobbyId}`);
+                setPlayers([ ...players, name ]);
+                console.log(players);
                 setMessages(messages => [ ...messages, `Joined lobby ${lobbyId}`]);
             });
         }
 
-        socket.on("new-player-joining", ({ username, lobbyId, roomCount }) => {
+        socket.on("new-player-joining", ({ newPlayer, roomCount }) => {
+            const { username, lobbyId } = newPlayer;
             console.log(`${username} has joined lobby ${lobbyId}`);
             console.log(`There are now ${roomCount} players in the lobby`)
             setMessages(messages => [ ...messages, `${username} has joined lobby ${lobbyId}` ]);
@@ -52,6 +61,11 @@ const Lobby = () => {
         if (socket === null) setSocket(socket);
         console.log(socket);
         joinRoom(socket);
+
+        // Disconnect socket when component unmounts
+        return () => {
+            socket.disconnect();
+        }
     }, []);
 
     const startGame = () => {
