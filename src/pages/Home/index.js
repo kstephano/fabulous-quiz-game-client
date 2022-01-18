@@ -24,7 +24,7 @@ const Home = () => {
     const handlePlay = () => {
         if (lobbyIdInput) {
             dispatch(setName(nameInput));
-            navigate(`/game/${lobbyIdInput}`);
+            navigate(`/lobby/${lobbyIdInput}`);
         }
     }
 
@@ -35,10 +35,10 @@ const Home = () => {
             { isJoin && 
                 <>
                     <input type="text" name="lobbyId" placeholder="Lobby ID" value={lobbyIdInput} onChange={handleInput(setLobbyIdInput)} required></input>
-                    <button onClick={handlePlay}>Play</button>
+                    <button onClick={handlePlay}>Join</button>
                 </>
             }
-            <button><Link className='main-btn' to={nameInput ? "/host" : "/"}>Host a game</Link></button>
+            <button onClick={() => dispatch(setName(nameInput))}><Link className='main-btn' to={nameInput ? "/host" : "/"}>Host a game</Link></button>
         </div>
     )
 }
