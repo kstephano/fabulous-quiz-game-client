@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { setName } from '../../redux/actions';
+import { setLobbyId, setName } from '../../redux/actions';
 import './style.css';
 
 const Home = () => {
@@ -24,7 +24,8 @@ const Home = () => {
     const handlePlay = () => {
         if (lobbyIdInput) {
             dispatch(setName(nameInput));
-            navigate(`/lobby/${lobbyIdInput}`);
+            dispatch(setLobbyId(lobbyIdInput));
+            navigate(`/lobby`);
         }
     }
 

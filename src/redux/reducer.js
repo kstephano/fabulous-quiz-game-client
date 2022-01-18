@@ -1,12 +1,14 @@
 import { combineReducers } from 'redux';
-import { SET_NAME, SET_HOST, SET_LOBBY_OPTIONS } from "./actions";
+import { SET_NAME, SET_HOST, SET_LOBBY_OPTIONS, SET_LOBBY_ID } from "./actions";
 
-const userReducer = (state={ name: "", isHost: false }, action) => {
+const userReducer = (state={ name: "", isHost: false, lobbyId: 1 }, action) => {
     switch (action.type) {
         case SET_NAME:
             return { ...state, name: action.payload }
         case SET_HOST:
             return { ...state, isHost: action.payload }
+        case SET_LOBBY_ID:
+            return { ...state, lobbyId: action.payload }
         default:
             return state;
     }
@@ -15,7 +17,7 @@ const userReducer = (state={ name: "", isHost: false }, action) => {
 const lobbyReducer = (state={ numOfQuestions: 5, category: "", difficulty: "", time: 60 }, action) => {
     switch (action.type) {
         case SET_LOBBY_OPTIONS:
-            return { state: action.payload }
+            return action.payload;
         default:
             return state;
     }
