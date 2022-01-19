@@ -8,6 +8,10 @@ h1 {
     text-align: center;
     padding-top: 20px;
     margin: 0 auto 15px auto;
+    text-shadow: -1px 1px 0 #000,
+				  1px 1px 0 #000,
+				 1px -1px 0 #000,
+				-1px -1px 0 #000;
 }
 
 nav {
@@ -22,8 +26,4 @@ nav a {
     padding: 15px;
     color: white;
     text-decoration: none;
-}
-
-nav a.active {
-    font-weight: 800; 
 }

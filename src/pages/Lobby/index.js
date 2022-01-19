@@ -77,7 +77,7 @@ const Lobby = () => {
 
     return (
         <div className='lobby-container'>
-            <h1>Lobby</h1>
+            <h2>Lobby</h2>
             <div className='players-container'>
                 <p>{players.length}/{}</p>
                 <ul>

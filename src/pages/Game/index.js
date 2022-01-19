@@ -6,7 +6,7 @@ import "./style.css"
 
 const Game = () => {
     const [ question, setQuestion ] = useState()
-    const [ countdown, setCountdown ] = useState(10)
+    const [ countdown, setCountdown ] = useState(100)
     const [ questionNum, setQuestionNum ] = useState(0)
     const [ correctIndex, setCorrectIndex ] = useState()
     const [ playing, setPlaying ] = useState(true)
@@ -42,16 +42,16 @@ const Game = () => {
         ]
     }]
 
-    useEffect(() => {
-        const cycle = () => {
-			setCountdown(countdown - 1)
-            if (countdown === 0) {
-                setQuestionNum(questionNum + 1)
-            }
-		};
-		const int = setInterval(cycle, 1000);
-		return () => clearInterval(int);
-    })
+    // useEffect(() => {
+    //     const cycle = () => {
+	// 		setCountdown(countdown - 1)
+    //         if (countdown === 0) {
+    //             setQuestionNum(questionNum + 1)
+    //         }
+	// 	};
+	// 	const int = setInterval(cycle, 1000);
+	// 	return () => clearInterval(int);
+    // })
 
     useEffect(() => {
         // Disconnect socket when component unmounts
@@ -65,7 +65,7 @@ const Game = () => {
             setPlaying(false)
         }
         setQuestion(questions[questionNum])
-        setCountdown(10)
+        setCountdown(100)
         setIsSubmitted(false)
         setCorrectIndex(Math.floor(Math.random() * 4))
         console.log(score)
@@ -73,10 +73,11 @@ const Game = () => {
     
     return (
         <div id="game-container">
-            <p className="game-id">Game ID: {params.lobbyId}</p>
+            <p className="game-id">Lobby ID: {params.socket}</p>
             { playing &&
                 <>
                     <p className="countdown">Time remaining: {countdown} seconds</p>
+                    <h2>Question {questionNum + 1}</h2>
                     { question && !isSubmitted && 
                         <Question
                             questionData={question}
@@ -86,8 +87,8 @@ const Game = () => {
                         />
                     }
                     { question && isSubmitted && 
-                        <div className="question-div">
-                            <p>Waiting...</p>
+                        <div className="question">
+                            <p className="waiting-p">Waiting...</p>
                         </div>
                     }
                 </>
