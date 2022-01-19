@@ -31,7 +31,7 @@ const Home = () => {
 
     return (
         <div className='home-container'>
-            <input type="text" name='name' placeholder="Enter a name" value={nameInput} onChange={handleInput(setNameInput)} required></input>
+            <input type="text" name='name' placeholder="Enter your name" value={nameInput} onChange={handleInput(setNameInput)} required></input>
             {!isJoin && <button onClick={handleJoin}>Join a game</button>}
             { isJoin && 
                 <>
