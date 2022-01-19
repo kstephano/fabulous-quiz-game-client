@@ -1,0 +1,21 @@
+#game-container {
+    width: 90%;
+    margin: 0 auto;
+    font-size: 18px;
+}
+
+.game-id {
+    color: white;
+}
+
+.countdown {
+    color: white;
+}
+
+h2 {
+    color: white;
+}
+
+.waiting-p {
+    text-align: center;
+}

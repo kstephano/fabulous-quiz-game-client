@@ -4,6 +4,8 @@ import { Home, Host, Leaderboard, Game, Results } from "./pages"
 import { Header } from "./layout"
 import Lobby from './pages/Lobby';
 
+import "./App.css"
+
 const App = () => {
     return (
         <>

@@ -1,0 +1,31 @@
+.answer-div {
+    margin: 10px auto;
+    background-color: white;
+    border-radius: 5px;
+    border: 2px solid white;
+}
+
+.answer {
+    width: 100%;
+    padding: 10px 15px;
+    display: inline-block;
+    font-size: 20px;
+}
+
+.answer-div input {
+  -webkit-appearance: none;
+  appearance: none;
+  background-color: #fff;
+  margin: 0;
+  width: 0;
+}
+
+.answer-div input:checked + label {
+    background-color:rgb(255, 136, 0);
+    /* border: 2px solid rgb(161, 86, 0); */
+    border-radius: 5px;
+}
+
+/* .answer-div input:focus + label {
+    border: 2px solid rgb(161, 86, 0);
+} */

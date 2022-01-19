@@ -86,7 +86,7 @@ const Lobby = () => {
 
     return (
         <div className='lobby-container'>
-            <h1>Lobby</h1>
+            <h2>Lobby</h2>
 
             <Modal className="pop-up">
                 <h2>Lobby does not exist</h2>
