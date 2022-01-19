@@ -1,64 +1,68 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useModal } from 'react-hooks-use-modal';
-import { setLobbyId } from '../../redux/actions';
+// import { setLobbyId } from '../../redux/actions';
 
 const Lobby = () => {
     const [ socket, setSocket ] = useState(null);
     const [ players, setPlayers ] = useState([]);
-    const [ messages, setMessages ] = useState(["hi"]);
+    const [ messages, setMessages ] = useState([]);
+    const [ lobbyId, setLobbyId ] = useState("");
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const name = useSelector(state => state.user.name);
     const isHost = useSelector(state => state.user.isHost);
-    const lobbyId = useSelector(state => state.user.lobbyId);
     const category = useSelector(state => state.lobby.category);
-    const [ Modal, open, close ] = useModal('root', { preventScroll: true, closeOnOverlayClick: false });
+    const [ ModalInvalidLobby, openModalInvalidLobby ] = useModal('root', { preventScroll: true, closeOnOverlayClick: false });
+    const [ ModalFullLobby, openModalFullLobby ] = useModal('root', { preventScroll: true, closeOnOverlayClick: false });
 
-
-    console.log(isHost);
-    console.log(name);
-    console.log(category);
+    console.log(lobbyId);
 
     const joinRoom = (socket) => {
         // make a socket room if host
         if (isHost) { 
             socket.emit("create-lobby", { username: name, category: category });
-            socket.on("lobby-created", ({ lobbyId }) => { 
-                dispatch(setLobbyId(lobbyId));
-                console.log(`Lobby created by ${name}`);
-                setMessages(messages => [ ...messages, `Lobby created by ${name}` ]);
+            socket.on("lobby-created", ({ host }) => { 
+                // dispatch(setLobbyId(host.lobby_id));
+                console.log(`Lobby ${host.lobby_id} created by ${host.username}`);
+                if (lobbyId === "") setLobbyId(host.lobby_id.toString());
+                setMessages(messages => [ `Lobby created by ${host.username}`, ...messages ]);
+                setPlayers(players => [ ...players, host ]);
             });
-            setPlayers(players => [...players, name]);
-            console.log(players);
         // otherwise, join a pre-existing socket room    
         } else {
-            console.log(lobbyId)
             socket.emit("request-join-lobby", { username: name, lobbyId: lobbyId });
 
-            socket.on("entry-permission", ({ lobbyId, players }) => {
-                console.log(`Joined lobby ${lobbyId}`);
-                setPlayers([ ...players, name ]);
-                console.log(players);
-                setMessages(messages => [ ...messages, `Joined lobby ${lobbyId}`]);
+            socket.on("entry-permission", ({ lobbyId, existingPlayers }) => {
+                setPlayers([ ...existingPlayers ]);
+                dispatch(setLobbyId(lobbyId));
+                setMessages(messages => [ `Joined lobby ${lobbyId}`, ...messages]);
+            });
+
+            socket.on("lobby-is-full", () => {
+                openModalFullLobby();
             });
 
             socket.on("lobby-id-invalid", () => {
-                open();
+                openModalInvalidLobby();
             });
         }
-
-        socket.on("new-player-joining", ({ newPlayer, roomCount }) => {
-            const { username, lobby_id } = newPlayer;
-            console.log(`${username} has joined lobby ${lobby_id}`);
-            console.log(`There are now ${roomCount} players in the lobby`)
-            setMessages(messages => [ ...messages, `${username} has joined lobby ${lobby_id}` ]);
-            setMessages(messages => [ ...messages, `There are now ${roomCount} players in the lobby` ]);
-        });
     }
 
+    const waitInRoom = (socket) => {
+        // add new player to local player list for everyone
+        socket.on("add-new-player", ({ newPlayer }) => {
+            setPlayers(players => [ ...players, newPlayer ]);
+        });
+
+        // herald the new player to other players
+        socket.on("herald-new-player", ({ newPlayer }) => {
+            const { username, lobby_id } = newPlayer;
+            setMessages(messages => [ `${username} has joined lobby ${lobby_id}`, ...messages ]);
+        });
+    }
 
     useEffect(() => {
         const io = require('socket.io-client');
@@ -67,12 +71,15 @@ const Lobby = () => {
         socket.on("connected", (msg) => {
             console.log(msg);
         });
+
         if (socket === null) setSocket(socket);
-        console.log(socket);
         joinRoom(socket);
+        waitInRoom(socket);
 
         // Disconnect socket when component unmounts
         return () => {
+            console.log(lobbyId)
+            socket.emit("leave-lobby", { lobbyId: lobbyId });
             socket.disconnect();
         }
     }, []);
@@ -81,20 +88,25 @@ const Lobby = () => {
         navigate(`/game/${socket}`);
     }
 
-    const renderPlayers = () => players.map((player, index) => <li key={index}>{player.name}</li>);
+    const renderPlayers = () => players.map((player, index) => <li key={index}>{player.username}</li>);
     const renderMessages = () => messages.map((message, index) => <p className='message' key={index}>{message}</p>)
 
     return (
         <div className='lobby-container'>
             <h1>Lobby</h1>
 
-            <Modal className="pop-up">
+            <ModalInvalidLobby className="pop-up">
                 <h2>Lobby does not exist</h2>
-                <button id="close-pop-up-btn" onClick={() => navigate('/')}>Go back</button>
-            </Modal>
+                <button id="close-pop-up-btn" onClick={() => navigate('/')}>Close</button>
+            </ModalInvalidLobby>
+
+            <ModalFullLobby className="pop-up">
+                <h2>Lobby is full</h2>
+                <button id="close-pop-up-btn" onClick={() => navigate('/')}>Close</button>
+            </ModalFullLobby>
 
             <div className='players-container'>
-                <p>{players.length}/{}</p>
+                <p>{players.length}/10{}</p>
                 <ul>
                     {renderPlayers()}
                 </ul>
