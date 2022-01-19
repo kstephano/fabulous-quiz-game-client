@@ -2,41 +2,41 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useModal } from 'react-hooks-use-modal';
-// import { setLobbyId } from '../../redux/actions';
+import { setLobbyId, initSocket } from '../../redux/actions';
 
 const Lobby = () => {
     const [ socket, setSocket ] = useState(null);
+    const [ currentPlayer, setCurrentPlayer ] = useState(null);
     const [ players, setPlayers ] = useState([]);
     const [ messages, setMessages ] = useState([]);
-    const [ lobbyId, setLobbyId ] = useState("");
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const name = useSelector(state => state.user.name);
+    const lobbyId = useSelector(state => state.user.lobbyId);
     const isHost = useSelector(state => state.user.isHost);
     const category = useSelector(state => state.lobby.category);
     const [ ModalInvalidLobby, openModalInvalidLobby ] = useModal('root', { preventScroll: true, closeOnOverlayClick: false });
     const [ ModalFullLobby, openModalFullLobby ] = useModal('root', { preventScroll: true, closeOnOverlayClick: false });
-
-    console.log(lobbyId);
 
     const joinRoom = (socket) => {
         // make a socket room if host
         if (isHost) { 
             socket.emit("create-lobby", { username: name, category: category });
             socket.on("lobby-created", ({ host }) => { 
-                // dispatch(setLobbyId(host.lobby_id));
+                dispatch(setLobbyId(host.lobby_id));
                 console.log(`Lobby ${host.lobby_id} created by ${host.username}`);
-                if (lobbyId === "") setLobbyId(host.lobby_id.toString());
                 setMessages(messages => [ `Lobby created by ${host.username}`, ...messages ]);
                 setPlayers(players => [ ...players, host ]);
+                setCurrentPlayer(host);
             });
         // otherwise, join a pre-existing socket room    
         } else {
             socket.emit("request-join-lobby", { username: name, lobbyId: lobbyId });
 
-            socket.on("entry-permission", ({ lobbyId, existingPlayers }) => {
+            socket.on("entry-permission", ({ lobbyId, existingPlayers, newPlayer }) => {
                 setPlayers([ ...existingPlayers ]);
+                setCurrentPlayer(newPlayer);
                 dispatch(setLobbyId(lobbyId));
                 setMessages(messages => [ `Joined lobby ${lobbyId}`, ...messages]);
             });
@@ -59,33 +59,46 @@ const Lobby = () => {
 
         // herald the new player to other players
         socket.on("herald-new-player", ({ newPlayer }) => {
-            const { username, lobby_id } = newPlayer;
-            setMessages(messages => [ `${username} has joined lobby ${lobby_id}`, ...messages ]);
+            const { username } = newPlayer;
+            setMessages(messages => [ `${username} has joined the lobby`, ...messages ]);
+        });
+        
+        // remove player from list when they leave
+        socket.on("player-left", ({ player }) => {
+            setPlayers(players => players.filter(p => p.id !== player.id));
+            setMessages(messages => [`${player.username} has left the lobby`, ...messages]);
+        });
+
+        // host starts the game
+        socket.on("change-view", () => {
+            navigate(`/game`);
         });
     }
 
     useEffect(() => {
         const io = require('socket.io-client');
         const serverEndpoint = "http://localhost:4000";
-        const socket = io(serverEndpoint);
-        socket.on("connected", (msg) => {
+        const newSocket = io(serverEndpoint);
+        newSocket.on("connected", (msg) => {
             console.log(msg);
         });
+        if (socket === null) setSocket(newSocket);
+        dispatch(initSocket(newSocket));
 
-        if (socket === null) setSocket(socket);
-        joinRoom(socket);
-        waitInRoom(socket);
-
-        // Disconnect socket when component unmounts
-        return () => {
-            console.log(lobbyId)
-            socket.emit("leave-lobby", { lobbyId: lobbyId });
-            socket.disconnect();
-        }
+        joinRoom(newSocket);
+        waitInRoom(newSocket);
     }, []);
 
     const startGame = () => {
-        navigate(`/game/${socket}`);
+        // host starts the game
+        socket.emit("host-load-game", ({ lobbyId: lobbyId, currentPlayer: currentPlayer }));
+    }
+
+    const leaveLobby = (socket) => {
+        console.log(lobbyId)
+        socket.emit("leave-lobby", ({ lobbyId: lobbyId , player: currentPlayer }));
+        navigate('/');
+        socket.disconnect();
     }
 
     const renderPlayers = () => players.map((player, index) => <li key={index}>{player.username}</li>);
@@ -93,15 +106,16 @@ const Lobby = () => {
 
     return (
         <div className='lobby-container'>
-            <h1>Lobby</h1>
+            <h2>Lobby</h2>
+            <button onClick={()=> leaveLobby(socket)}>Leave lobby</button>
 
             <ModalInvalidLobby className="pop-up">
-                <h2>Lobby does not exist</h2>
+                <h3>Lobby does not exist</h3>
                 <button id="close-pop-up-btn" onClick={() => navigate('/')}>Close</button>
             </ModalInvalidLobby>
 
             <ModalFullLobby className="pop-up">
-                <h2>Lobby is full</h2>
+                <h3>Lobby is full</h3>
                 <button id="close-pop-up-btn" onClick={() => navigate('/')}>Close</button>
             </ModalFullLobby>
 
