@@ -69,8 +69,8 @@ const Lobby = () => {
             setMessages(messages => [`${player.username} has left the lobby`, ...messages]);
         });
 
-        // host starts the game
-        socket.on("change-view", () => {
+        // host loads the game for other players
+        socket.on("loading-game", () => {
             navigate(`/game`);
         });
     }
@@ -92,6 +92,7 @@ const Lobby = () => {
     const startGame = () => {
         // host starts the game
         socket.emit("host-load-game", ({ lobbyId: lobbyId, currentPlayer: currentPlayer }));
+        navigate('/game');
     }
 
     const leaveLobby = (socket) => {
