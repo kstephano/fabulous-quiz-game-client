@@ -14,7 +14,7 @@ const userReducer = (state={ name: "", isHost: false, lobbyId: "" }, action) => 
     }
 }
 
-const lobbyReducer = (state={ players:[], numOfQuestions: 5, category: "", difficulty: "", time: 60 }, action) => {
+const lobbyReducer = (state={ players:[], numOfQuestions: 5, categoryId: 8, difficulty: "", roundLimit: 60 }, action) => {
     switch (action.type) {
         case SET_LOBBY_OPTIONS:
             return action.payload;
