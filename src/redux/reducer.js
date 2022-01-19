@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import { SET_NAME, SET_HOST, SET_LOBBY_ID , SET_LOBBY_OPTIONS, ADD_PLAYER } from "./actions";
+import { SET_NAME, SET_HOST, SET_LOBBY_ID , SET_LOBBY_OPTIONS, ADD_PLAYER, INIT_SOCKET } from "./actions";
 
 const userReducer = (state={ name: "", isHost: false, lobbyId: "" }, action) => {
     switch (action.type) {
@@ -25,9 +25,19 @@ const lobbyReducer = (state={ players:[], numOfQuestions: 5, category: "", diffi
     }
 }
 
+const socketReducer = (state=null, action) => {
+    switch (action.type) {
+        case INIT_SOCKET:
+            return action.payload
+        default:
+            return state;
+    }
+}
+
 const combinedReducer = combineReducers({
     user: userReducer,
-    lobby: lobbyReducer
+    lobby: lobbyReducer,
+    socket: socketReducer
 });
 
 export default combinedReducer;

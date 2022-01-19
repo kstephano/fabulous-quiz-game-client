@@ -4,6 +4,7 @@ const SET_HOST = "SET_HOST";
 const SET_LOBBY_ID = "SET_LOBBY_ID";
 const SET_LOBBY_OPTIONS = "SET_LOBBY_OPTIONS";
 const ADD_PLAYER = "ADD_PLAYER";
+const INIT_SOCKET = "SET_SOCKET";
 
 // action creators
 const setName = (name) => ({
@@ -31,5 +32,10 @@ const addPlayer = (player) => ({
     payload: player
 });
 
-export { SET_NAME, SET_HOST, SET_LOBBY_ID, SET_LOBBY_OPTIONS, ADD_PLAYER }
-export { setName, setHost, setLobbyId, setLobbyOptions, addPlayer }
+const initSocket = (socket) => ({
+    type: INIT_SOCKET,
+    payload: socket
+});
+
+export { SET_NAME, SET_HOST, SET_LOBBY_ID, SET_LOBBY_OPTIONS, ADD_PLAYER, INIT_SOCKET }
+export { setName, setHost, setLobbyId, setLobbyOptions, addPlayer, initSocket }
