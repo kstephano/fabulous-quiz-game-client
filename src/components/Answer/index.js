@@ -1,17 +1,19 @@
 import React from "react";
 
-const Answer = ({answer, index, correct, handleCorrect}) => {
+import "./style.css"
+
+const Answer = ({answer, index, correct, letter, handleCorrect}) => {
     return (
-        <div className="answer">
+        <div className="answer-div">
             <input
                 type="radio"
                 name="answer"
                 value={answer} 
                 id={"answer" + (index + 1)} 
-                // correct={correct ? "correct" : "incorrect"}
                 onClick={() => handleCorrect(correct)}
+                required
             />
-            <label htmlFor={"answer" + index}>{answer}</label>
+            <label htmlFor={"answer" + (index + 1)} className="answer">{letter}) {answer}</label>
         </div>
     )
 }

@@ -1,0 +1,29 @@
+header {
+    color: white;
+}
+
+h1 {
+    font-family: "Patua One";
+    font-size: 35px;
+    text-align: center;
+    padding-top: 20px;
+    margin: 0 auto 15px auto;
+    text-shadow: -1px 1px 0 #000,
+				  1px 1px 0 #000,
+				 1px -1px 0 #000,
+				-1px -1px 0 #000;
+}
+
+nav {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    font-size: 20px;
+    border-bottom: 2px solid white;
+}
+
+nav a {
+    padding: 15px;
+    color: white;
+    text-decoration: none;
+}

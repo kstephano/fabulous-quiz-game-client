@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Question } from "../../components"
 
+import "./style.css"
+
 const Game = () => {
     const [ question, setQuestion ] = useState()
     const [ countdown, setCountdown ] = useState(10)
