@@ -7,9 +7,8 @@ import "./style.css"
 
 const Game = () => {
     const [ question, setQuestion ] = useState()
-    const [ questionList, setQuestionList ] = useState({})
+    const [ questionList, setQuestionList ] = useState([])
     const [ countdown, setCountdown ] = useState(10)
-    // const [ timeLimit, setTimeLimit ] = useState()
     const [ questionNum, setQuestionNum ] = useState(0)
     const [ isFinished, setIsFinished ] = useState(false)
     const [ results, setResults ] = useState(null);
@@ -38,7 +37,7 @@ const Game = () => {
     //     ]
     // }
 
-    const GameInProgress = () => {
+    const startGame = () => {
 
         // host finished loading game
         socket.on("finished-loading", ({ lobby, players, currentPlayer, questions }) => {
@@ -48,19 +47,23 @@ const Game = () => {
             // setCountdown(time)
             // setTimeLimit(time)
             setPlayer(currentPlayer.username);
-            setQuestionList(questions)
-            setQuestion(questions[0])
+            setQuestionList(questions);
+            setQuestion(questions[0]);
         });
+    }
 
+    const gameInProgress = () => {
         // set the countdown from the socket server
         socket.on("counter", ({ count }) => {
             setCountdown(count);
         });
         
-        socket.on("new-round", () => {
-            // TODO cycle to next question
-            setQuestionNum(questionNum + 1)
-            setQuestion(questionList[questionNum])
+        socket.on("new-round", ({ currentRound, currentQuestion }) => {
+            console.log("new round started");
+            console.log("current round: " + currentRound);
+            console.log(currentQuestion);
+            setQuestionNum(currentRound);
+            setQuestion(currentQuestion)
         });
 
         socket.on("game-finished", () => {
@@ -72,21 +75,9 @@ const Game = () => {
         })
     }
 
-    // // countdown moved to io server side
-    // useEffect(() => {
-    //     const cycle = () => {
-    //         setCountdown(countdown - 1)
-    //         if (countdown === 0) {
-    //             setIsSubmitted(true)
-    //             socket.emit("round-done", {questionNum: questionNum})
-    //         }
-	// 	};
-	// 	const int = setInterval(cycle, 1000);
-	// 	return () => clearInterval(int);
-    // })
-
     useEffect(() => {
-        GameInProgress();
+        startGame();
+        gameInProgress();
         // Disconnect socket when component unmounts
         return () => {
             socket.disconnect();
@@ -99,7 +90,6 @@ const Game = () => {
             setScore(score => score / (questionList.length)) //CHECK THAT QUESTION NUM IS CORRECT
             socket.emit("player-score", {username: player, score: score })
         } else {
-            // setCountdown(timeLimit)
             setIsSubmitted(false)
             setCorrectIndex(Math.floor(Math.random() * 4))
             console.log(score)
@@ -108,7 +98,7 @@ const Game = () => {
     
     return (
         <div id="game-container">
-            <p>game id: {0}</p>
+            <p>Round {questionNum}</p>
             { playing &&
                 <>
                     <p>Time remaining: {countdown} seconds</p>
