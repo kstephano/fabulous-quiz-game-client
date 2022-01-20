@@ -25,3 +25,30 @@ body {
 #root {
     height: 100%;
 }
+
+button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+}
+
+button:active {
+    color: white;
+}
+
+.green-button {
+    background-color: rgb(0, 189, 31);
+}
+
+.green-button:active {
+    background-color: rgb(0, 116, 19);
+}
+
+.orange-button {
+    background-color: rgb(255, 136, 0);
+}
+
+.orange-button:active {
+    background-color: rgb(146, 78, 0);
+}

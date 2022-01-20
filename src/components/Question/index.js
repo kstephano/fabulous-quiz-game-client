@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import {Answer} from "..";
+import { Answer } from ".."
 
-import "./style.css";
+import "./style.css"
 
 const Question = ({questionData, correctIndex, toggleSubmitted, updateScore}) => {
     const [ isCorrect, setIsCorrect ] = useState(false)
@@ -26,7 +26,6 @@ const Question = ({questionData, correctIndex, toggleSubmitted, updateScore}) =>
 
     const handleSubmit = e => {
         e.preventDefault();
-        console.log(isCorrect);
         if (isCorrect) {
             updateScore(score => score + 1)
         }
