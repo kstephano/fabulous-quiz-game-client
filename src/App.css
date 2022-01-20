@@ -2,6 +2,11 @@
 
 * {
     font-family: "Nanum Gothic";
+}
+
+*,
+*:before,
+*:after {
     box-sizing: border-box;
 }
 

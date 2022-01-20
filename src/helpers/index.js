@@ -1,6 +1,5 @@
-const getLobbyId = () => {
-    // TODO api call
-    return 5;
+function randomNumBetween(min, max) { 
+    return Math.floor(Math.random() * (max - min) + min);
 }
 
-export { getLobbyId }
+export { randomNumBetween }

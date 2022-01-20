@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { setName } from '../../redux/actions';
+import { setLobbyId, setName } from '../../redux/actions';
 import './style.css';
 
 const Home = () => {
+    console.log('hi')
     const [ nameInput, setNameInput ] = useState("");
     const [ lobbyIdInput, setLobbyIdInput ] = useState("");
     const [ isJoin, setIsJoin ] = useState(false);
@@ -24,7 +25,15 @@ const Home = () => {
     const handlePlay = () => {
         if (lobbyIdInput) {
             dispatch(setName(nameInput));
-            navigate(`/lobby/${lobbyIdInput}`);
+            dispatch(setLobbyId(lobbyIdInput));
+            navigate(`/lobby`);
+        }
+    }
+
+    const handleHost = () => {
+        if (nameInput) {
+            dispatch(setName(nameInput))
+            navigate("/host")
         }
     }
 
