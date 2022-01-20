@@ -2,7 +2,6 @@
 const SET_NAME = "SET_NAME";
 const SET_ID = "SET_ID";
 const SET_SCORE = "SET_SCORE";
-const SET_HOST = "SET_HOST";
 const SET_LOBBY_ID = "SET_LOBBY_ID";
 const SET_LOBBY_OPTIONS = "SET_LOBBY_OPTIONS";
 const ADD_PLAYER = "ADD_PLAYER";
@@ -22,11 +21,6 @@ const setId = (id) => ({
 const setScoreAction = (score) => ({
     type: SET_SCORE,
     payload: score
-});
-
-const setHost = (isHost) => ({
-    type: SET_HOST,
-    payload: isHost
 });
 
 const setLobbyId = (lobbyId) => ({
@@ -49,5 +43,5 @@ const initSocket = (socket) => ({
     payload: socket
 });
 
-export { SET_NAME, SET_ID, SET_SCORE, SET_HOST, SET_LOBBY_ID, SET_LOBBY_OPTIONS, ADD_PLAYER, INIT_SOCKET }
-export { setName, setId, setScoreAction, setHost, setLobbyId, setLobbyOptions, addPlayer, initSocket }
+export { SET_NAME, SET_ID, SET_SCORE, SET_LOBBY_ID, SET_LOBBY_OPTIONS, ADD_PLAYER, INIT_SOCKET }
+export { setName, setId, setScoreAction, setLobbyId, setLobbyOptions, addPlayer, initSocket }

@@ -25,7 +25,8 @@ const Home = () => {
         if (lobbyIdInput) {
             dispatch(setName(nameInput));
             dispatch(setLobbyId(lobbyIdInput));
-            navigate(`/lobby`);
+            const isHost = false;
+            navigate(`/lobby/${isHost}`);
         }
     }
 

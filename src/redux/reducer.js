@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
-import { SET_NAME, SET_ID, SET_SCORE, SET_HOST, SET_LOBBY_ID , SET_LOBBY_OPTIONS, ADD_PLAYER, INIT_SOCKET } from "./actions";
+import { SET_NAME, SET_ID, SET_SCORE, SET_LOBBY_ID , SET_LOBBY_OPTIONS, ADD_PLAYER, INIT_SOCKET } from "./actions";
 
-const userReducer = (state={ name: "", id: 0, score: 0, isHost: false, lobbyId: "" }, action) => {
+const userReducer = (state={ name: "", id: 0, score: 0, lobbyId: "" }, action) => {
     switch (action.type) {
         case SET_NAME:
             return { ...state, name: action.payload }
@@ -9,8 +9,6 @@ const userReducer = (state={ name: "", id: 0, score: 0, isHost: false, lobbyId: 
             return { ...state, id: action.payload }
         case SET_SCORE: 
             return { ...state, id: action.payload }
-        case SET_HOST:
-            return { ...state, isHost: action.payload }
         case SET_LOBBY_ID:
             return { ...state, lobbyId: action.payload }
         default:

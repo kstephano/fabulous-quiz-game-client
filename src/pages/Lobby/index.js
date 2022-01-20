@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useModal } from 'react-hooks-use-modal';
-import { setLobbyId, initSocket, setName, setId, setHost } from '../../redux/actions';
+import { setLobbyId, initSocket, setName, setId } from '../../redux/actions';
 import { randomNumBetween } from '../../helpers/index';
 
 import "./style.css"
@@ -18,16 +18,17 @@ const Lobby = () => {
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const params = useParams();
+    const isHost = params.isHost;
     const name = useSelector(state => state.user.name);
     const lobbyId = useSelector(state => state.user.lobbyId);
-    const isHost = useSelector(state => state.user.isHost);
     const { numOfQuestions, category, difficulty, roundLimit } = useSelector(state => state.lobby);
     const [ ModalInvalidLobby, openModalInvalidLobby ] = useModal('root', { preventScroll: true, closeOnOverlayClick: false });
     const [ ModalFullLobby, openModalFullLobby ] = useModal('root', { preventScroll: true, closeOnOverlayClick: false });
 
     const joinRoom = (socket) => {
         // make a socket room if host
-        if (isHost) { 
+        if (isHost === 'true') { 
             let categoryId = category;
             if (category === 8) {
                 categoryId = randomNumBetween(9, 32);
@@ -170,13 +171,13 @@ const Lobby = () => {
                     {renderMessages()}
                 </div>
             }
-            { !isHost && !isNewHost && 
+            { isHost === 'false' && !isNewHost && 
             <div className="start-buttons-div">
                 <p>Waiting for the host to start the game</p>
                 <button onClick={()=> leaveLobby(socket)} className="orange-button">Leave lobby</button>
             </div>
             }
-            { (isHost || isNewHost) && 
+            { (isHost === 'true' || isNewHost) && 
             <div className="start-buttons-div host-buttons">
                 <button onClick={startGame} className="green-button">Start Game</button>
                 <button onClick={()=> leaveLobby(socket)} className="orange-button">Leave lobby</button>
