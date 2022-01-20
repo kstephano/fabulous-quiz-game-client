@@ -8,7 +8,7 @@ import "./style.css"
 const Game = () => {
     const [ question, setQuestion ] = useState()
     const [ questionList, setQuestionList ] = useState({})
-    const [ countdown, setCountdown ] = useState(10)
+    const [ countdown, setCountdown ] = useState()
     // const [ timeLimit, setTimeLimit ] = useState()
     const [ questionNum, setQuestionNum ] = useState(0)
     const [ isFinished, setIsFinished ] = useState(false)

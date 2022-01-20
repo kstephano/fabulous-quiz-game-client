@@ -45,7 +45,7 @@ const Host = () => {
                     <select onChange={e => setTime(e.target.value)} name="time" id="time" type="number">{renderOptions(times)}</select>
                 </label>
                 <div className="submit-container">
-                    <button type="submit" id="create-lobby-btn">Create!</button>
+                    <button type="submit" id="create-lobby-btn" className="green-button">Create!</button>
                 </div>
             </form>
         </div>

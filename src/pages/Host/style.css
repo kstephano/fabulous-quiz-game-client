@@ -24,15 +24,5 @@
 }
 
 #create-lobby-btn {
-    padding: 10px 20px;
-    border: none;
     width: 145px;
-    border-radius: 5px;
-    font-size: 18px;
-    background-color: rgb(0, 189, 31);
-}
-
-#create-lobby-btn:active {
-    background-color: rgb(0, 116, 19);
-    color: white;
 }

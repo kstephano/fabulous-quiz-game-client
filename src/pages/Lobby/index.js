@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useModal } from 'react-hooks-use-modal';
 import { setLobbyId, initSocket } from '../../redux/actions';
 
+import "./style.css"
+
 const Lobby = () => {
     const [ socket, setSocket ] = useState(null);
     const [ currentPlayer, setCurrentPlayer ] = useState(null);
@@ -106,33 +108,51 @@ const Lobby = () => {
     const renderMessages = () => messages.map((message, index) => <p className='message' key={index}>{message}</p>)
 
     return (
-        <div className='lobby-container'>
+        <div id='lobby-container'>
             <h2>Lobby</h2>
-            <button onClick={()=> leaveLobby(socket)}>Leave lobby</button>
 
-            <ModalInvalidLobby className="pop-up">
-                <h3>Lobby does not exist</h3>
-                <button id="close-pop-up-btn" onClick={() => navigate('/')}>Close</button>
+            {/* <ModalInvalidLobby>
+                <div className="pop-up">
+                    <h3>Lobby does not exist</h3>
+                    <button id="close-pop-up-btn" onClick={() => navigate('/')}>Close</button>
+                </div>
             </ModalInvalidLobby>
 
             <ModalFullLobby className="pop-up">
-                <h3>Lobby is full</h3>
-                <button id="close-pop-up-btn" onClick={() => navigate('/')}>Close</button>
-            </ModalFullLobby>
+                <div className="pop-up">
+                    <h3>Lobby is full</h3>
+                    <button id="close-pop-up-btn" onClick={() => navigate('/')}>Close</button>
+                </div>
+            </ModalFullLobby> */}
 
             <div className='players-container'>
-                <p>{players.length}/10{}</p>
-                <ul>
-                    {renderPlayers()}
-                </ul>
+                <p>Players {players.length}/10{}</p>
+                { players.length !== 0 &&
+                    <ul>
+                        {renderPlayers()}
+                    </ul>
+                }
             </div>
-            <div className='message-container'>
-                {renderMessages()}
+            {messages.length !== 0 &&
+                <div className='message-container'>
+                    {renderMessages()}
+                </div>
+            }
+            { !isHost && 
+            <div className="start-buttons-div">
+                <p>Waiting for the host to start the game</p>
+                <button onClick={()=> leaveLobby(socket)} className="orange-button">Leave lobby</button>
             </div>
-            <button onClick={startGame} disabled={!isHost}>Start Game</button>
+            }
+            { isHost && 
+            <div className="start-buttons-div host-buttons">
+                <button onClick={startGame} className="green-button">Start Game</button>
+                <button onClick={()=> leaveLobby(socket)} className="orange-button">Leave lobby</button>
+            </div>
+            }
             <div className='invite-friends-container'>
                 <h2>Invite your friends!</h2>
-                <p className='lobby-id'>{lobbyId}</p>
+                <p className='lobby-id'>Lobby ID: {lobbyId}</p>
             </div>
         </div>
     )

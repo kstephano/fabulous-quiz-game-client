@@ -39,14 +39,14 @@ const Home = () => {
     return (
         <div id='home-container'>
             <input type="text" name='name' placeholder="Enter your name" value={nameInput} onChange={handleInput(setNameInput)} required></input>
-            {!isJoin && <button onClick={handleJoin} className="join-button">Join a game</button>}
+            {!isJoin && <button onClick={handleJoin} className="green-button">Join a game</button>}
             { isJoin && 
                 <>
                     <input type="text" name="lobbyId" placeholder="Lobby ID" value={lobbyIdInput} onChange={handleInput(setLobbyIdInput)} required></input>
-                    <button onClick={handlePlay} className="join-button">Play!</button>
+                    <button onClick={handlePlay} className="green-button">Play!</button>
                 </>
             }
-            <button onClick={handleHost} className="host-button">Host a game</button>
+            <button onClick={handleHost} className="orange-button">Host a game</button>
         </div>
     )
 }
