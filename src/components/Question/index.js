@@ -26,7 +26,6 @@ const Question = ({questionData, correctIndex, toggleSubmitted, updateScore}) =>
 
     const handleSubmit = e => {
         e.preventDefault();
-        console.log(isCorrect);
         if (isCorrect) {
             updateScore(score => score + 1)
         }

@@ -39,7 +39,7 @@ const Host = () => {
                     <input onChange={e => setRounds(e.target.value)} type="number" id="rounds" name="rounds" step="1" min="5" max="30" />
                 </label>
                 <label htmlFor='category'>Category
-                    <select onChange={e => setCategory(e.target.value)} name="category" id="category">{renderOptions(categories)}</select>
+                    <select onChange={e => setCategoryId(e.target.value)} name="category" id="category">{renderCategories(categories)}</select>
                 </label>
                 <label htmlFor='difficulty'>Difficulty
                     <select onChange={e => setDifficulty(e.target.value)} name='difficulty' id='difficulty'>{renderOptions(difficulties)}</select>

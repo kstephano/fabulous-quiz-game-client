@@ -37,13 +37,6 @@ const Home = () => {
         }
     }
 
-    const handleHost = () => {
-        if (nameInput) {
-            dispatch(setName(nameInput))
-            navigate("/host")
-        }
-    }
-
     return (
         <div id='home-container'>
             <input type="text" name='name' placeholder="Enter your name" value={nameInput} onChange={handleInput(setNameInput)} required></input>

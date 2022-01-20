@@ -90,8 +90,8 @@ const Game = () => {
             { playing &&
                 <>
                     <p>Time remaining: {countdown} seconds</p>
-                    <h2>Question {questionNum + 1}</h2>
-                    { question && <p>Category: {question.category}</p> }
+                    <h2>Question {questionNum}</h2>
+                    {/* { question && <p className="category">Category: {question.category}</p> } */}
                     { question && 
                         <>
                             { !isSubmitted && 
@@ -103,7 +103,7 @@ const Game = () => {
                                 />
                             }
                             { isSubmitted && 
-                                <div className="question-div">
+                                <div className="waiting-p">
                                     <p>Waiting...</p>
                                 </div> 
                             }
