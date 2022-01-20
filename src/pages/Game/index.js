@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { Question } from "../../components"
+import { Question } from "../../components";
 
 import "./style.css"
 
@@ -15,27 +15,12 @@ const Game = () => {
     const [ correctIndex, setCorrectIndex ] = useState()
     const [ playing, setPlaying ] = useState(true)
     const [ isSubmitted, setIsSubmitted ] = useState(false)
-    const [ player, setPlayer ] = useState()
-    const [ score, setScore ] = useState(0)
+    const [ player, setPlayer ] = useState(null);
+    const [ players, setPlayers ] = useState();
+    const [ score, setScore ] = useState(0);
+    const [ uploadCount, setUploadCount ] = useState(-1);
 
-    const name = useSelector(state => state.user.name);
-    const lobbyId = useSelector(state => state.user.lobbyId);
-    const isHost = useSelector(state => state.user.isHost);
-    const category = useSelector(state => state.lobby.category);
     const socket = useSelector(state => state.socket);
-
-    // question = {
-    //     category: "Mythology",
-    //     type: "multiple",
-    //     difficulty: "medium",
-    //     question: "The Hippogriff, not to be confused with the Griffon, is a magical creature with the front half of an eagle, and the back half of what?",
-    //     correct_answer: "A Horse",
-    //     incorrect_answers: [
-    //     "A Dragon",
-    //     "A Tiger",
-    //     "A Lion"
-    //     ]
-    // }
 
     const startGame = () => {
 
@@ -43,10 +28,8 @@ const Game = () => {
         socket.on("finished-loading", ({ lobby, players, currentPlayer, questions }) => {
             // start the game
             socket.emit("host-start-game", { lobby, questions });
-            // const { id, time } = lobby;
-            // setCountdown(time)
-            // setTimeLimit(time)
-            setPlayer(currentPlayer.username);
+            setPlayer(currentPlayer);
+            setPlayers(players);
             setQuestionList(questions);
             setQuestion(questions[0]);
         });
@@ -59,7 +42,6 @@ const Game = () => {
         });
         
         socket.on("new-round", ({ currentRound, currentQuestion }) => {
-            console.log("new round started");
             console.log("current round: " + currentRound);
             console.log(currentQuestion);
             setQuestionNum(currentRound);
@@ -67,13 +49,19 @@ const Game = () => {
         });
 
         socket.on("game-finished", () => {
-            setIsFinished(true)
+            console.log("game finished");
+            setIsFinished(true);
+            setQuestionNum(0);
+            setUploadCount(0);
         });
-
-        socket.on("scores", ({ scores }) => {
-            setResults(scores)
-        })
     }
+
+    useEffect(() => {
+        socket.on("upload-done", () => {
+            console.log("upload done");
+            setUploadCount(uploadCount => uploadCount++);
+        });
+    }, [])
 
     useEffect(() => {
         startGame();
@@ -86,9 +74,9 @@ const Game = () => {
 
     useEffect(() => {
         if (isFinished) {
-            setPlaying(false)
-            setScore(score => score / (questionList.length)) //CHECK THAT QUESTION NUM IS CORRECT
-            socket.emit("player-score", {username: player, score: score })
+            console.log("game has finished");
+            setPlaying(false);
+            socket.emit("upload-score", { player: player, score: score, rounds: questionList.length });
         } else {
             setIsSubmitted(false)
             setCorrectIndex(Math.floor(Math.random() * 4))
@@ -98,9 +86,9 @@ const Game = () => {
     
     return (
         <div id="game-container">
-            <p>Round {questionNum}</p>
             { playing &&
                 <>
+                    <p>Round {questionNum}</p>
                     <p>Time remaining: {countdown} seconds</p>
                     { question && <p>Category: {question.category}</p> }
                     { question && 
