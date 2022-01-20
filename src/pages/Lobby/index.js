@@ -39,6 +39,7 @@ const Lobby = () => {
             socket.on("lobby-created", ({ host }) => { 
                 dispatch(setLobbyId(host.lobby_id));
                 dispatch(setName(host.username));
+                dispatch(setId(host.id));
                 setMessages(messages => [ `Lobby created by ${host.username}`, ...messages ]);
                 setPlayers(players => [ ...players, host ]);
                 setCurrentPlayer(host);
@@ -54,6 +55,7 @@ const Lobby = () => {
                 setPlayerId(newPlayer.id);
                 setCurrentPlayer(newPlayer);
                 dispatch(setLobbyId(lobbyId));
+                dispatch(setId(newPlayer.id));
                 setMessages(messages => [ `Joined lobby ${lobbyId}`, ...messages]);
             });
 
@@ -122,7 +124,7 @@ const Lobby = () => {
 
     const startGame = () => {
         // host starts the game
-        socket.emit("host-load-game", ({ lobbyId: lobbyId, currentPlayer: currentPlayer }));
+        socket.emit("host-load-game", ({ lobbyId: lobbyId }));
         navigate('/game');
     }
 

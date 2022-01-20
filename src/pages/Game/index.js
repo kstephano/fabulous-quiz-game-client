@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Question } from "../../components";
+import axios from 'axios';
 
 import "./style.css"
 
@@ -21,14 +22,13 @@ const Game = () => {
     const [ isGameLoaded, setIsGameLoaded ]  = useState(false);
 
     const navigate = useNavigate();
+    const playerId = useSelector(state => state.user.id);
     const socket = useSelector(state => state.socket);
 
     const startGame = () => {
-
         // host finished loading game
-        socket.on("finished-loading", ({ lobby, players, currentPlayer, questions }) => {
+        socket.on("host-finished-loading", ({ lobby, players, questions }) => {
             setCountdown(lobby.time)
-            setPlayer(currentPlayer);
             setLobbyId(lobby.id);
             setQuestionList(questions);
             setQuestion(questions[0]);
@@ -62,6 +62,16 @@ const Game = () => {
             setIsUploaded(true);
         });
     }
+
+    useEffect(() => {
+        console.log(playerId);
+        axios
+            .get(`http://localhost:3000/users/at/${playerId}`)
+            .then(response => {
+                setPlayer(response.data.user)
+                console.log(response.data.user)
+            });
+    }, [isGameLoaded]);
 
     useEffect(() => {
         if (socket === null) {
