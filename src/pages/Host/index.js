@@ -4,6 +4,8 @@ import { useDispatch } from 'react-redux';
 import { categories, difficulties, times } from '../../data/index';
 import { setHost, setLobbyOptions } from '../../redux/actions';
 
+import "./style.css"
+
 const Host = () => {
     const [ rounds, setRounds ] = useState(5);
     const [ category, setCategory ] = useState(categories[0]);
@@ -27,18 +29,24 @@ const Host = () => {
     const renderOptions = (list) => list.map((item, key) => <option key={key} value={item}>{item}</option>);
 
     return(
-        <div className='host-container'>
+        <div id='host-container'>
+            <h2>Lobby Settings</h2>
             <form className='settings-form' onSubmit={createLobby}>
-                <h2>Lobby Settings</h2>
-                <label htmlFor='rounds'>Number of questions</label>
-                <input onChange={e => setRounds(e.target.value)} type="number" id="rounds" name="rounds" step="1" min="5" max="30" />
-                <label htmlFor='category'>Category</label>
-                <select onChange={e => setCategory(e.target.value)} name="category" id="category">{renderOptions(categories)}</select>
-                <label htmlFor='difficulty'>Difficulty</label>
-                <select onChange={e => setDifficulty(e.target.value)} name='difficulty' id='difficulty'>{renderOptions(difficulties)}</select>
-                <label htmlFor='time'>Time limit (seconds)</label>
-                <select onChange={e => setTime(e.target.value)} name="time" id="time" type="number">{renderOptions(times)}</select>
-                <button type="submit" id="create-lobby-btn">Create!</button>
+                <label htmlFor='rounds'>Number of questions
+                    <input onChange={e => setRounds(e.target.value)} type="number" id="rounds" name="rounds" step="1" min="5" max="30" />
+                </label>
+                <label htmlFor='category'>Category
+                    <select onChange={e => setCategory(e.target.value)} name="category" id="category">{renderOptions(categories)}</select>
+                </label>
+                <label htmlFor='difficulty'>Difficulty
+                    <select onChange={e => setDifficulty(e.target.value)} name='difficulty' id='difficulty'>{renderOptions(difficulties)}</select>
+                </label>
+                <label htmlFor='time'>Time limit (seconds)
+                    <select onChange={e => setTime(e.target.value)} name="time" id="time" type="number">{renderOptions(times)}</select>
+                </label>
+                <div className="submit-container">
+                    <button type="submit" id="create-lobby-btn">Create!</button>
+                </div>
             </form>
         </div>
     )
