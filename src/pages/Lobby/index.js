@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useModal } from 'react-hooks-use-modal';
-import { setLobbyId, initSocket } from '../../redux/actions';
+import { setLobbyId, initSocket, setName, setId } from '../../redux/actions';
+import { randomNumBetween } from '../../helpers/index';
 
 import "./style.css"
 
@@ -17,16 +18,26 @@ const Lobby = () => {
     const name = useSelector(state => state.user.name);
     const lobbyId = useSelector(state => state.user.lobbyId);
     const isHost = useSelector(state => state.user.isHost);
-    const category = useSelector(state => state.lobby.category);
+    const { numOfQuestions, category, difficulty, roundLimit } = useSelector(state => state.lobby);
     const [ ModalInvalidLobby, openModalInvalidLobby ] = useModal('root', { preventScroll: true, closeOnOverlayClick: false });
     const [ ModalFullLobby, openModalFullLobby ] = useModal('root', { preventScroll: true, closeOnOverlayClick: false });
 
     const joinRoom = (socket) => {
+        console.log(randomNumBetween(1, 5));
         // make a socket room if host
         if (isHost) { 
-            socket.emit("create-lobby", { username: name, category: category });
+            let categoryId = category;
+            if (category === 8) {
+                categoryId = randomNumBetween(9, 32);
+            }
+            console.log("category id:" + categoryId);
+            // send event to create the lobby
+            socket.emit("create-lobby", { username: name, numOfQuestions: numOfQuestions, categoryId: categoryId, difficulty: difficulty, roundLimit: roundLimit });
+            // on lobby created event
             socket.on("lobby-created", ({ host }) => { 
                 dispatch(setLobbyId(host.lobby_id));
+                dispatch(setId(host.id));
+                dispatch(setName(host.username));
                 console.log(`Lobby ${host.lobby_id} created by ${host.username}`);
                 setMessages(messages => [ `Lobby created by ${host.username}`, ...messages ]);
                 setPlayers(players => [ ...players, host ]);

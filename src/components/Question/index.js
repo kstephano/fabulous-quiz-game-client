@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import {Answer} from "..";
+import { Answer } from ".."
 
-import "./style.css";
+import "./style.css"
 
 const Question = ({questionData, correctIndex, toggleSubmitted, updateScore}) => {
     const [ isCorrect, setIsCorrect ] = useState(false)

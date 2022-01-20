@@ -5,6 +5,7 @@ import { setLobbyId, setName } from '../../redux/actions';
 import './style.css';
 
 const Home = () => {
+    console.log('hi')
     const [ nameInput, setNameInput ] = useState("");
     const [ lobbyIdInput, setLobbyIdInput ] = useState("");
     const [ isJoin, setIsJoin ] = useState(false);
@@ -26,6 +27,13 @@ const Home = () => {
             dispatch(setName(nameInput));
             dispatch(setLobbyId(lobbyIdInput));
             navigate(`/lobby`);
+        }
+    }
+
+    const handleHost = () => {
+        if (nameInput) {
+            dispatch(setName(nameInput))
+            navigate("/host")
         }
     }
 

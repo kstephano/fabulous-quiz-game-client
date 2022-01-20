@@ -1,92 +1,71 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { Question } from "../../components"
+import { Question } from "../../components";
 
 import "./style.css"
 
 const Game = () => {
     const [ question, setQuestion ] = useState()
-    const [ questionList, setQuestionList ] = useState({})
-    const [ countdown, setCountdown ] = useState()
-    // const [ timeLimit, setTimeLimit ] = useState()
+    const [ questionList, setQuestionList ] = useState([])
+    const [ countdown, setCountdown ] = useState(10)
     const [ questionNum, setQuestionNum ] = useState(0)
     const [ isFinished, setIsFinished ] = useState(false)
     const [ results, setResults ] = useState(null);
     const [ correctIndex, setCorrectIndex ] = useState()
     const [ playing, setPlaying ] = useState(true)
     const [ isSubmitted, setIsSubmitted ] = useState(false)
-    const [ player, setPlayer ] = useState()
-    const [ score, setScore ] = useState(0)
+    const [ player, setPlayer ] = useState(null);
+    const [ players, setPlayers ] = useState();
+    const [ score, setScore ] = useState(0);
+    const [ uploadCount, setUploadCount ] = useState(-1);
 
-    const name = useSelector(state => state.user.name);
-    const lobbyId = useSelector(state => state.user.lobbyId);
-    const isHost = useSelector(state => state.user.isHost);
-    const category = useSelector(state => state.lobby.category);
     const socket = useSelector(state => state.socket);
 
-    // question = {
-    //     category: "Mythology",
-    //     type: "multiple",
-    //     difficulty: "medium",
-    //     question: "The Hippogriff, not to be confused with the Griffon, is a magical creature with the front half of an eagle, and the back half of what?",
-    //     correct_answer: "A Horse",
-    //     incorrect_answers: [
-    //     "A Dragon",
-    //     "A Tiger",
-    //     "A Lion"
-    //     ]
-    // }
-
-    const GameInProgress = () => {
+    const startGame = () => {
 
         // host finished loading game
         socket.on("finished-loading", ({ lobby, players, currentPlayer, questions }) => {
             // start the game
             socket.emit("host-start-game", { lobby, questions });
-            // const { id, time } = lobby;
-            // setCountdown(time)
-            // setTimeLimit(time)
-            setPlayer(currentPlayer.username);
-            setQuestionList(questions)
-            setQuestion(questions[0])
+            setPlayer(currentPlayer);
+            setPlayers(players);
+            setQuestionList(questions);
+            setQuestion(questions[0]);
         });
+    }
 
+    const gameInProgress = () => {
         // set the countdown from the socket server
         socket.on("counter", ({ count }) => {
             setCountdown(count);
         });
         
-        socket.on("new-round", () => {
-            // TODO cycle to next question
-            setQuestionNum(questionNum + 1)
-            setQuestion(questionList[questionNum])
+        socket.on("new-round", ({ currentRound, currentQuestion }) => {
+            console.log("current round: " + currentRound);
+            console.log(currentQuestion);
+            setQuestionNum(currentRound);
+            setQuestion(currentQuestion)
         });
 
         socket.on("game-finished", () => {
-            setIsFinished(true)
+            console.log("game finished");
+            setIsFinished(true);
+            setQuestionNum(0);
+            setUploadCount(0);
         });
-
-        socket.on("scores", ({ scores }) => {
-            setResults(scores)
-        })
     }
 
-    // // countdown moved to io server side
-    // useEffect(() => {
-    //     const cycle = () => {
-    //         setCountdown(countdown - 1)
-    //         if (countdown === 0) {
-    //             setIsSubmitted(true)
-    //             socket.emit("round-done", {questionNum: questionNum})
-    //         }
-	// 	};
-	// 	const int = setInterval(cycle, 1000);
-	// 	return () => clearInterval(int);
-    // })
+    useEffect(() => {
+        socket.on("upload-done", () => {
+            console.log("upload done");
+            setUploadCount(uploadCount => uploadCount++);
+        });
+    }, [])
 
     useEffect(() => {
-        GameInProgress();
+        startGame();
+        gameInProgress();
         // Disconnect socket when component unmounts
         return () => {
             socket.disconnect();
@@ -95,11 +74,10 @@ const Game = () => {
 
     useEffect(() => {
         if (isFinished) {
-            setPlaying(false)
-            setScore(score => score / (questionList.length)) //CHECK THAT QUESTION NUM IS CORRECT
-            socket.emit("player-score", {username: player, score: score })
+            console.log("game has finished");
+            setPlaying(false);
+            socket.emit("upload-score", { player: player, score: score, rounds: questionList.length });
         } else {
-            // setCountdown(timeLimit)
             setIsSubmitted(false)
             setCorrectIndex(Math.floor(Math.random() * 4))
             console.log(score)
