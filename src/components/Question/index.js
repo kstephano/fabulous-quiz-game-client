@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { decodeHtml } from "../../helpers";
 import { Answer } from ".."
 
 import "./style.css"
@@ -35,7 +36,7 @@ const Question = ({questionData, correctIndex, toggleSubmitted, updateScore}) =>
     return (
         <div className="question-div">
             {/* <p className="category">{questionData.category}</p> */}
-            <p className="question">{questionData.question}</p>
+            <p className="question">{decodeHtml(questionData.question)}</p>
             <div className="form-container">
                 <form onSubmit={handleSubmit} className="answer-form">
                     {answerOptions}
