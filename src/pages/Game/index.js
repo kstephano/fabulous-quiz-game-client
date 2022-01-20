@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Question } from "../../components";
 
@@ -8,30 +8,33 @@ import "./style.css"
 const Game = () => {
     const [ question, setQuestion ] = useState()
     const [ questionList, setQuestionList ] = useState([])
-    const [ countdown, setCountdown ] = useState(10)
+    const [ countdown, setCountdown ] = useState(0)
     const [ questionNum, setQuestionNum ] = useState(0)
     const [ isFinished, setIsFinished ] = useState(false)
-    const [ results, setResults ] = useState(null);
     const [ correctIndex, setCorrectIndex ] = useState()
     const [ playing, setPlaying ] = useState(true)
     const [ isSubmitted, setIsSubmitted ] = useState(false)
     const [ player, setPlayer ] = useState(null);
-    const [ players, setPlayers ] = useState();
     const [ score, setScore ] = useState(0);
-    const [ uploadCount, setUploadCount ] = useState(-1);
+    const [ isUploaded, setIsUploaded ] = useState(false);
+    const [ lobbyId, setLobbyId ] = useState(0);
+    const [ isGameLoaded, setIsGameLoaded ]  = useState(false);
 
+    const navigate = useNavigate();
     const socket = useSelector(state => state.socket);
 
     const startGame = () => {
 
         // host finished loading game
         socket.on("finished-loading", ({ lobby, players, currentPlayer, questions }) => {
-            // start the game
-            socket.emit("host-start-game", { lobby, questions });
+            setCountdown(lobby.time)
             setPlayer(currentPlayer);
-            setPlayers(players);
+            setLobbyId(lobby.id);
             setQuestionList(questions);
             setQuestion(questions[0]);
+            setIsGameLoaded(true);
+            // start the game
+            socket.emit("host-start-game", { lobby, questions });
         });
     }
 
@@ -52,20 +55,22 @@ const Game = () => {
             console.log("game finished");
             setIsFinished(true);
             setQuestionNum(0);
-            setUploadCount(0);
+        });
+
+        socket.on("upload-done", () => {
+            console.log("upload done");
+            setIsUploaded(true);
         });
     }
 
     useEffect(() => {
-        socket.on("upload-done", () => {
-            console.log("upload done");
-            setUploadCount(uploadCount => uploadCount++);
-        });
-    }, [])
-
-    useEffect(() => {
-        startGame();
-        gameInProgress();
+        if (socket === null) {
+            console.log(player)
+            navigate('/');
+        } else {
+            startGame();
+            gameInProgress();
+        }
         // Disconnect socket when component unmounts
         return () => {
             socket.disconnect();
@@ -86,7 +91,12 @@ const Game = () => {
     
     return (
         <div id="game-container">
-            { playing &&
+            { !isGameLoaded &&
+                <>
+                    <p>Loading...</p>
+                </>
+            }
+            { playing && isGameLoaded &&
                 <>
                     <p>Round {questionNum}</p>
                     <p>Time remaining: {countdown} seconds</p>
@@ -108,10 +118,10 @@ const Game = () => {
             }
             { !playing && 
                 <>
-                    { !results && <p>Calculating scores...</p> }
-                    { results && 
+                    { !isUploaded && <p>Calculating scores...</p> }
+                    { isUploaded && 
                         <button>
-                            <Link to="/results" state={{scores: results, questions: questionList.length}}> {/* CHECK QUESTION NUM */}
+                            <Link to="/results" state={{ lobbyId: lobbyId, rounds: questionList.length }}>
                                 See results
                             </Link>
                         </button>
