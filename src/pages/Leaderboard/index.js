@@ -1,8 +1,9 @@
-import React from "react";
-import {LeaderboardItem} from "../../components"
+import React, { useState, useEffect } from "react";
+import {LeaderboardItem} from "../../components";
 
 const Leaderboard = () => {
-    const leaderboardData = [{id: 1, name: "Emily", score: "100%", category: "general knowledge"}]
+    const [leaderboardData, setLeaderboardData] = useState([{id: 1, name: "Emily", score: "100%", category: "general knowledge"}])
+    // const fetchLeaderBoard = 
     const leaderboard = leaderboardData.map(data => <LeaderboardItem data={data} key={data.id} />)
 
     return (
