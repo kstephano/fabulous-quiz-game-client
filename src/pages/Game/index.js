@@ -92,13 +92,15 @@ const Game = () => {
     return (
         <div id="game-container">
             { !isGameLoaded &&
-                <>
-                    <p>Loading...</p>
-                </>
+                <div className="waiting-div">
+                    <div className="waiting-p">
+                        <p>Loading...</p>
+                    </div>
+                </div>
             }
             { playing && isGameLoaded &&
                 <>
-                    <p>Time remaining: {countdown} seconds</p>
+                    <p className="countdown">Time remaining: {countdown} seconds</p>
                     <h2>Question {questionNum}</h2>
                     {/* { question && <p className="category">Category: {question.category}</p> } */}
                     { question && 
@@ -121,16 +123,26 @@ const Game = () => {
                 </>
             }
             { !playing && 
-                <>
-                    { !isUploaded && <p>Calculating scores...</p> }
-                    { isUploaded && 
-                        <button>
-                            <Link to="/results" state={{ lobbyId: lobbyId, rounds: questionList.length }}>
-                                See results
-                            </Link>
-                        </button>
+                <div className="waiting-div">
+                    { !isUploaded && 
+                        <div className="waiting-p">
+                            <p>Calculating scores...</p>
+                        </div> 
                     }
-                </>
+                    { isUploaded && 
+                        <div className="results-button-container">
+                            <button className="green-button">
+                                <Link
+                                    to="/results" 
+                                    state={{ lobbyId: lobbyId, rounds: questionList.length }}
+                                    className="results-link"
+                                >
+                                    See results
+                                </Link>
+                            </button>
+                        </div>
+                    }
+                </div>
             }
         </div>
     )

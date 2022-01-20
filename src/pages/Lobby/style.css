@@ -35,12 +35,24 @@
     list-style-type: circle;
 }
 
+.message-container {
+    background-color: white;
+    border-radius: 5px;
+    margin: 15px auto;
+    padding: 0 10px;
+    max-height: 85px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
 .start-buttons-div {
     text-align: center;
+    margin-top: 15px;
 }
 
 .host-buttons {
     display: flex;
+    justify-content: space-around;
 }
 
 .host-buttons button {
