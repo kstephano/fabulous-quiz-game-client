@@ -1,0 +1,23 @@
+#results-container {
+    width: 90%;
+    margin: 0 auto;
+}
+
+.results {
+    background-color: white;
+    border-radius: 5px;
+    font-size: 18px;
+}
+
+.result-item {
+    display: grid;
+    grid-template-columns: 15px 1fr 1fr;
+}
+
+.percentage-score {
+    font-size: 15px;
+}
+
+.first {
+    font-weight: bold;
+}

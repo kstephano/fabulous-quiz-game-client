@@ -1,0 +1,54 @@
+#lobby-container {
+    width: 90%;
+    margin: 0 auto;
+    font-size: 18px;
+}
+
+.pop-up {
+    background-color: rgb(255, 255, 255);
+    text-align: center;
+    padding: 25px 20px;
+    border-radius: 5px;
+    font-size: 22px;
+    margin-top: -210px;
+}
+
+.pop-up button {
+    background-color: rgb(199, 199, 199);
+}
+
+.pop-up button:active {
+    background-color: rgb(105, 105, 105);
+}
+
+.players-container {
+    background-color: white;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.players-container p {
+    margin: 0;
+}
+
+.players-container li {
+    list-style-type: circle;
+}
+
+.start-buttons-div {
+    text-align: center;
+}
+
+.host-buttons {
+    display: flex;
+}
+
+.host-buttons button {
+    margin: 0 10px;
+}
+
+.lobby-id {
+    background-color: white;
+    padding: 10px;
+    border-radius: 5px;
+}

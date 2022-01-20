@@ -36,9 +36,16 @@ const Results = () => {
         }
     }
 
+    // const results = scores.map((score, index) => {
+    //     <div key={index} className={position(index + 1) + " result-item"}>
+    //         <p>{index + 1}</p>
+    //         <p>{score.username}</p>
+    //         <p>{Math.ceiling(score.score * questions / 100)}/{questions} <span className="percentage-score">({score.score}%)</span></p>
+    //     </div>
+    // })
     const lobbyResults = results.map((user, index) => {
         return (
-            <div key={index} className={position(index + 1)}>
+            <div key={index} className={position(index + 1) + " result-item"}>
                 <p>{index + 1}</p>
                 <p>{user.username}</p>
                 <p>{user.score}/{numOfQuestions}</p>
@@ -49,7 +56,9 @@ const Results = () => {
     return (
         <div id="results-container">
             <h2>Results</h2>
-            {lobbyResults}
+            <div className="results">
+                {lobbyResults}
+            </div>
         </div>
     )
 }

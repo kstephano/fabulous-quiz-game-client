@@ -1,6 +1,8 @@
 import React, {useEffect, useState} from "react";
 import axios from 'axios'
-import {LeaderboardItem} from "../../components"
+import { LeaderboardItem } from "../../components"
+
+import "./style.css"
 
 const Leaderboard = () => {
     const [leaderboardData, setLeaderboardData] = useState([])
@@ -10,14 +12,14 @@ const Leaderboard = () => {
             .get('http://localhost:3000/users/leaderboard')
             .then(response => setLeaderboardData(response.data.users.filter(user => user.score !== null)));
       }, []);
-    
+
     const leaderboard = leaderboardData.map(data => <LeaderboardItem data={data} key={data.id} />)
 
     return (
-        <div className="leaderboard-container">
+        <div id="leaderboard-container">
             <h2>Leaderboard</h2>
             <div className="leaderboard">
-                <div className="leaderboard-item">
+                <div className="leaderboard-item leaderboard-heading">
                     <p>Name</p>
                     <p>Score</p>
                 </div>

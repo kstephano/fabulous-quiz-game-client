@@ -4,18 +4,16 @@
     font-size: 18px;
 }
 
-.game-id {
-    color: white;
-}
-
-.countdown {
-    color: white;
-}
-
-h2 {
+.game-id,
+.countdown,
+h2,
+.category {
     color: white;
 }
 
 .waiting-p {
     text-align: center;
+    background-color: white;
+    border-radius: 5px;
+    padding: 10px;
 }

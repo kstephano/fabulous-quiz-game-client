@@ -1,3 +1,7 @@
+.question-div {
+    padding: 5px 10px;
+}
+
 .category {
     font-weight: 800;
     margin-top: 10px;
@@ -6,9 +10,9 @@
 .question {
     margin: 10px auto;
     padding: 10px;
-    background-color: white;
     font-size: 20px;
     border-radius: 5px;
+    background-color: white;
 }
 
 .form-container {
@@ -26,12 +30,12 @@
 }
 
 .submit-answer-button {
-    padding: 10px 20px;
-    border: none;
     width: 165px;
     background-color: rgb(0, 189, 31);
-    font-size: 18px;
+    padding: 10px 20px;
+    border: none;
     border-radius: 5px;
+    font-size: 18px;
 }
 
 .submit-answer-button:active {

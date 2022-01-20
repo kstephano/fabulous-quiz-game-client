@@ -98,9 +98,9 @@ const Game = () => {
             }
             { playing && isGameLoaded &&
                 <>
-                    <p>Round {questionNum}</p>
                     <p>Time remaining: {countdown} seconds</p>
-                    { question && <p>Category: {question.category}</p> }
+                    <h2>Question {questionNum}</h2>
+                    {/* { question && <p className="category">Category: {question.category}</p> } */}
                     { question && 
                         <>
                             { !isSubmitted && 
@@ -111,7 +111,11 @@ const Game = () => {
                                     updateScore={setScore}
                                 />
                             }
-                            { isSubmitted && <p>Waiting...</p> }
+                            { isSubmitted && 
+                                <div className="waiting-p">
+                                    <p>Waiting...</p>
+                                </div> 
+                            }
                         </>
                     }
                 </>
