@@ -143,7 +143,7 @@ const Lobby = () => {
         <div id='lobby-container'>
             <h2>Lobby</h2>
 
-            {/* <ModalInvalidLobby>
+            <ModalInvalidLobby>
                 <div className="pop-up">
                     <h3>Lobby does not exist</h3>
                     <button id="close-pop-up-btn" onClick={() => navigate('/')}>Close</button>
@@ -155,7 +155,7 @@ const Lobby = () => {
                     <h3>Lobby is full</h3>
                     <button id="close-pop-up-btn" onClick={() => navigate('/')}>Close</button>
                 </div>
-            </ModalFullLobby> */}
+            </ModalFullLobby>
 
             <div className='players-container'>
                 <p>Players: {players.length}/10{}</p>
@@ -170,13 +170,13 @@ const Lobby = () => {
                     {renderMessages()}
                 </div>
             }
-            { !isHost && 
+            { !isHost && !isNewHost && 
             <div className="start-buttons-div">
                 <p>Waiting for the host to start the game</p>
                 <button onClick={()=> leaveLobby(socket)} className="orange-button">Leave lobby</button>
             </div>
             }
-            { isHost && 
+            { (isHost || isNewHost) && 
             <div className="start-buttons-div host-buttons">
                 <button onClick={startGame} className="green-button">Start Game</button>
                 <button onClick={()=> leaveLobby(socket)} className="orange-button">Leave lobby</button>
