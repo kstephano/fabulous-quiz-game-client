@@ -34,7 +34,7 @@ const Host = () => {
             <form className='settings-form' onSubmit={createLobby}>
                 <h1>Lobby Settings</h1>
                 <label htmlFor='rounds'>Number of questions</label>
-                <input onChange={e => setRounds(e.target.value)} type="number" id="rounds" name="rounds" step="1" min="5" max="30" />
+                <input onChange={e => setRounds(e.target.value)} type="number" id="rounds" name="rounds" step="1" min="1" max="50" />
                 <label htmlFor='category'>Category</label>
                 <select onChange={e => setCategoryId(e.target.value)} name="category" id="category">{renderCategories(categories)}</select>
                 <label htmlFor='difficulty'>Difficulty</label>
