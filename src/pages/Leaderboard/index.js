@@ -10,8 +10,7 @@ const Leaderboard = () => {
     useEffect(() => {
         axios
             .get('http://localhost:3000/users/leaderboard')
-            .then(response => setLeaderboardData(response.data.users));
-        console.log(leaderboardData)
+            .then(response => setLeaderboardData(response.data.users.filter(user => user.score !== null)));
       }, []);
 
     const leaderboard = leaderboardData.map(data => <LeaderboardItem data={data} key={data.id} />)
