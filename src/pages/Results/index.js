@@ -1,10 +1,27 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import axios from 'axios';
 
 const Results = () => {
+    const [ results, setResults ] = useState([]);
     const location = useLocation();
-    const { scores, questions } = location.state;
-    // scores = [{username: "", score: 0.45}, {...}]
+    const lobbyId = location.state.lobbyId;
+    const numOfQuestions = location.state.rounds;
+    console.log(results);
+    console.log(lobbyId);
+
+    useEffect(() => {
+        console.log(lobbyId);
+        axios
+            .get(`http://localhost:3000/users/${lobbyId}`)
+            .then(response => {
+                const data = response.data.users;
+                const userResults = data.map((user) => (
+                    { username: user.username, score: user.score / 100 * numOfQuestions }
+                ));
+                setResults(userResults);
+            });
+    }, []);
 
     const position = num => {
         switch (num) {
@@ -19,18 +36,20 @@ const Results = () => {
         }
     }
 
-    const results = scores.map((score, index) => {
-        <div key={index} className={position(index + 1)}>
-            <p>{index + 1}</p>
-            <p>{score.username}</p>
-            <p>{score.score * questions}/{questions} <span>({score.score * 100}%)</span></p>
-        </div>
-    })
+    const lobbyResults = results.map((user, index) => {
+        return (
+            <div key={index} className={position(index + 1)}>
+                <p>{index + 1}</p>
+                <p>{user.username}</p>
+                <p>{user.score}/{numOfQuestions}</p>
+            </div>
+        );
+    });
 
     return (
         <div id="results-container">
             <h2>Results</h2>
-            {results}
+            {lobbyResults}
         </div>
     )
 }
