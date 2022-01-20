@@ -29,7 +29,7 @@ const Host = () => {
     return(
         <div className='host-container'>
             <form className='settings-form' onSubmit={createLobby}>
-                <h1>Lobby Settings</h1>
+                <h2>Lobby Settings</h2>
                 <label htmlFor='rounds'>Number of questions</label>
                 <input onChange={e => setRounds(e.target.value)} type="number" id="rounds" name="rounds" step="1" min="5" max="30" />
                 <label htmlFor='category'>Category</label>

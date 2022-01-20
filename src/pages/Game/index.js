@@ -108,10 +108,11 @@ const Game = () => {
     
     return (
         <div id="game-container">
-            <p>game id: {0}</p>
+            {/* <p>game id: {0}</p> */}
             { playing &&
                 <>
                     <p>Time remaining: {countdown} seconds</p>
+                    <h2>Question {questionNum + 1}</h2>
                     { question && <p>Category: {question.category}</p> }
                     { question && 
                         <>
@@ -123,7 +124,11 @@ const Game = () => {
                                     updateScore={setScore}
                                 />
                             }
-                            { isSubmitted && <p>Waiting...</p> }
+                            { isSubmitted && 
+                                <div className="question-div">
+                                    <p>Waiting...</p>
+                                </div> 
+                            }
                         </>
                     }
                 </>
