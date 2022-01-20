@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useModal } from 'react-hooks-use-modal';
-import { setLobbyId, initSocket, setName, setId } from '../../redux/actions';
+import { setLobbyId, initSocket, setName, setId, setHost } from '../../redux/actions';
 import { randomNumBetween } from '../../helpers/index';
 
 const Lobby = () => {
@@ -10,6 +10,9 @@ const Lobby = () => {
     const [ currentPlayer, setCurrentPlayer ] = useState(null);
     const [ players, setPlayers ] = useState([]);
     const [ messages, setMessages ] = useState([]);
+    const [ newHost, setNewHost ] = useState(null);
+    const [ isNewHost, setIsNewHost ] = useState(false);
+    const [ playerId, setPlayerId ] = useState(0);
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -21,7 +24,6 @@ const Lobby = () => {
     const [ ModalFullLobby, openModalFullLobby ] = useModal('root', { preventScroll: true, closeOnOverlayClick: false });
 
     const joinRoom = (socket) => {
-        console.log(randomNumBetween(1, 5));
         // make a socket room if host
         if (isHost) { 
             let categoryId = category;
@@ -34,19 +36,20 @@ const Lobby = () => {
             // on lobby created event
             socket.on("lobby-created", ({ host }) => { 
                 dispatch(setLobbyId(host.lobby_id));
-                dispatch(setId(host.id));
                 dispatch(setName(host.username));
-                console.log(`Lobby ${host.lobby_id} created by ${host.username}`);
                 setMessages(messages => [ `Lobby created by ${host.username}`, ...messages ]);
                 setPlayers(players => [ ...players, host ]);
                 setCurrentPlayer(host);
+                console.log(`Lobby ${host.lobby_id} created by ${host.username}`);
             });
         // otherwise, join a pre-existing socket room    
         } else {
             socket.emit("request-join-lobby", { username: name, lobbyId: lobbyId });
 
             socket.on("entry-permission", ({ lobbyId, existingPlayers, newPlayer }) => {
+                console.log(newPlayer);
                 setPlayers([ ...existingPlayers ]);
+                setPlayerId(newPlayer.id);
                 setCurrentPlayer(newPlayer);
                 dispatch(setLobbyId(lobbyId));
                 setMessages(messages => [ `Joined lobby ${lobbyId}`, ...messages]);
@@ -76,8 +79,15 @@ const Lobby = () => {
         
         // remove player from list when they leave
         socket.on("player-left", ({ player }) => {
+            console.log("player left");
             setPlayers(players => players.filter(p => p.id !== player.id));
             setMessages(messages => [`${player.username} has left the lobby`, ...messages]);
+        });
+
+        // choose new host if they have left
+        socket.on("host-left", ({ newHost }) => {
+            console.log(newHost);
+            setNewHost(newHost);
         });
 
         // host loads the game for other players
@@ -100,6 +110,14 @@ const Lobby = () => {
         waitInRoom(newSocket);
     }, []);
 
+    useEffect(() => {
+        if (newHost !== null) {
+            if (newHost.id === playerId) {
+                setIsNewHost(true);
+            }
+        }
+    }, [newHost]);
+
     const startGame = () => {
         // host starts the game
         socket.emit("host-load-game", ({ lobbyId: lobbyId, currentPlayer: currentPlayer }));
@@ -108,7 +126,8 @@ const Lobby = () => {
 
     const leaveLobby = (socket) => {
         console.log(lobbyId)
-        socket.emit("leave-lobby", ({ lobbyId: lobbyId , player: currentPlayer }));
+        setPlayers(players => players.filter(p => p.id !== currentPlayer.id));
+        socket.emit("leave-lobby", ({ lobbyId: lobbyId , player: currentPlayer, isHost: isHost }));
         navigate('/');
         socket.disconnect();
     }
@@ -140,7 +159,7 @@ const Lobby = () => {
             <div className='message-container'>
                 {renderMessages()}
             </div>
-            <button onClick={startGame} disabled={!isHost}>Start Game</button>
+            <button onClick={startGame} disabled={!(isHost || isNewHost)}>Start Game</button>
             <div className='invite-friends-container'>
                 <h2>Invite your friends!</h2>
                 <p className='lobby-id'>{lobbyId}</p>
