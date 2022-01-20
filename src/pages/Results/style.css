@@ -7,11 +7,12 @@
     background-color: white;
     border-radius: 5px;
     font-size: 18px;
+    padding: 10px;
 }
 
 .result-item {
     display: grid;
-    grid-template-columns: 15px 1fr 1fr;
+    grid-template-columns: 25px 1fr 1fr;
 }
 
 .percentage-score {

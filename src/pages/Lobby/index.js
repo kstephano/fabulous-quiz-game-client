@@ -137,7 +137,7 @@ const Lobby = () => {
             </ModalFullLobby> */}
 
             <div className='players-container'>
-                <p>Players {players.length}/10{}</p>
+                <p>Players: {players.length}/10{}</p>
                 { players.length !== 0 &&
                     <ul>
                         {renderPlayers()}

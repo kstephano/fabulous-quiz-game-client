@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import axios from 'axios';
 
+import "./style.css"
+
 const Results = () => {
     const [ results, setResults ] = useState([]);
     const location = useLocation();
