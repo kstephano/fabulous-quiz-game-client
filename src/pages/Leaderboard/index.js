@@ -8,11 +8,9 @@ const Leaderboard = () => {
     const [leaderboardData, setLeaderboardData] = useState([])
 
     useEffect(() => {
-
         axios
-          .get('http://localhost:3000/users/leaderboard')
-          .then(response => setLeaderboardData(response.data.users));
-
+            .get('http://localhost:3000/users/leaderboard')
+            .then(response => setLeaderboardData(response.data.users));
         console.log(leaderboardData)
       }, []);
 
@@ -30,6 +28,6 @@ const Leaderboard = () => {
             </div>
         </div>
     )
-    }
+}
 
 export default Leaderboard;
