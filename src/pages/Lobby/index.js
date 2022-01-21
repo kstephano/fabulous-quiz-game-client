@@ -26,6 +26,8 @@ const Lobby = () => {
     const [ ModalInvalidLobby, openModalInvalidLobby ] = useModal('root', { preventScroll: true, closeOnOverlayClick: false });
     const [ ModalFullLobby, openModalFullLobby ] = useModal('root', { preventScroll: true, closeOnOverlayClick: false });
 
+    console.log(messages);
+
     const joinRoom = (socket) => {
         // make a socket room if host
         if (isHost === 'true') { 
@@ -91,6 +93,7 @@ const Lobby = () => {
 
         // choose new host if they have left
         socket.on("host-left", ({ newHost }) => {
+            setMessages(messages => [`Host left`, ...messages]);
             console.log(newHost);
             setNewHost(newHost);
         });
@@ -119,6 +122,7 @@ const Lobby = () => {
         if (newHost !== null) {
             if (newHost.id === playerId) {
                 setIsNewHost(true);
+                setMessages(messages => [ `You are now the host`, ...messages ]);
             }
         }
     }, [newHost]);
