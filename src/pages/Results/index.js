@@ -15,7 +15,7 @@ const Results = () => {
     useEffect(() => {
         console.log(lobbyId);
         axios
-            .get(`http://localhost:3000/users/${lobbyId}`)
+            .get(`https://quizfab-app.herokuapp.com/users/${lobbyId}`)
             .then(response => {
                 const data = response.data.users;
                 const userResults = data.map((user) => (

@@ -66,7 +66,7 @@ const Game = () => {
     useEffect(() => {
         console.log(playerId);
         axios
-            .get(`http://localhost:3000/users/at/${playerId}`)
+            .get(`https://quizfab-app.herokuapp.com/users/at/${playerId}`)
             .then(response => {
                 setPlayer(response.data.user)
                 console.log(response.data.user)
