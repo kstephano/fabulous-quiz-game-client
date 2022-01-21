@@ -50,6 +50,10 @@
     margin-top: 15px;
 }
 
+.white {
+    color: white;
+}
+
 .host-buttons {
     display: flex;
     justify-content: space-around;

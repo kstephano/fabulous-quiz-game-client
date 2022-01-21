@@ -177,7 +177,7 @@ const Lobby = () => {
             }
             { isHost === 'false' && !isNewHost && 
             <div className="start-buttons-div">
-                <p>Waiting for the host to start the game</p>
+                <p className="white">Waiting for the host to start the game</p>
                 <button onClick={()=> leaveLobby(socket)} className="orange-button">Leave lobby</button>
             </div>
             }
