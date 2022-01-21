@@ -6,9 +6,9 @@ import "./style.css"
 
 const Question = ({questionData, correctIndex, toggleSubmitted, updateScore}) => {
     const [ isCorrect, setIsCorrect ] = useState(false)
+    let lettersArray = ["A", "B", "C", "D"]
 
     let answersArray = ["", "", "", ""]
-    let lettersArray = ["A", "B", "C", "D"]
     answersArray[correctIndex] = questionData.correct_answer
     for (let i = 1; i < 4; i++) {
         answersArray[(correctIndex + i) % 4] = questionData.incorrect_answers[i - 1]
