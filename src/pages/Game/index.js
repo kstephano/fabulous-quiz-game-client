@@ -45,37 +45,30 @@ const Game = () => {
     });
 
     socket.on("new-round", ({ currentRound, currentQuestion }) => {
-      console.log("current round: " + currentRound);
-      console.log(currentQuestion);
       setQuestionNum(currentRound);
       setQuestion(currentQuestion);
     });
 
     socket.on("game-finished", () => {
-      console.log("game finished");
       setIsFinished(true);
       setQuestionNum(0);
     });
 
     socket.on("upload-done", () => {
-      console.log("upload done");
       setIsUploaded(true);
     });
   };
 
   useEffect(() => {
-    console.log(playerId);
     axios
       .get(`https://quiz-game-api-db.herokuapp.com/users/at/${playerId}`)
       .then((response) => {
         setPlayer(response.data.user);
-        console.log(response.data.user);
       });
   }, [isGameLoaded]);
 
   useEffect(() => {
     if (socket === null) {
-      console.log(player);
       navigate("/");
     } else {
       startGame();
@@ -89,7 +82,6 @@ const Game = () => {
 
   useEffect(() => {
     if (isFinished) {
-      console.log("game has finished");
       setPlaying(false);
       socket.emit("upload-score", {
         player: player,
@@ -99,7 +91,6 @@ const Game = () => {
     } else {
       setIsSubmitted(false);
       setCorrectIndex(Math.floor(Math.random() * 4));
-      console.log(score);
     }
   }, [questionNum]);
 
