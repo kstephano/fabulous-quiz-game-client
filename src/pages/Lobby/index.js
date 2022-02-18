@@ -34,8 +34,6 @@ const Lobby = () => {
     closeOnOverlayClick: false,
   });
 
-  console.log(messages);
-
   const joinRoom = (socket) => {
     // make a socket room if host
     if (isHost === "true") {
@@ -43,7 +41,6 @@ const Lobby = () => {
       if (category === 8) {
         categoryId = randomNumBetween(9, 32);
       }
-      console.log("category id:" + categoryId);
       // send event to create the lobby
       socket.emit("create-lobby", {
         username: name,
@@ -63,7 +60,6 @@ const Lobby = () => {
         ]);
         setPlayers((players) => [...players, host]);
         setCurrentPlayer(host);
-        console.log(`Lobby ${host.lobby_id} created by ${host.username}`);
       });
       // otherwise, join a pre-existing socket room
     } else {
@@ -72,7 +68,6 @@ const Lobby = () => {
       socket.on(
         "entry-permission",
         ({ lobbyId, existingPlayers, newPlayer }) => {
-          console.log(newPlayer);
           setPlayers([...existingPlayers]);
           setPlayerId(newPlayer.id);
           setCurrentPlayer(newPlayer);
@@ -109,7 +104,6 @@ const Lobby = () => {
 
     // remove player from list when they leave
     socket.on("player-left", ({ player }) => {
-      console.log("player left");
       setPlayers((players) => players.filter((p) => p.id !== player.id));
       setMessages((messages) => [
         `${player.username} has left the lobby`,
@@ -120,7 +114,6 @@ const Lobby = () => {
     // choose new host if they have left
     socket.on("host-left", ({ newHost }) => {
       setMessages((messages) => [`Host left`, ...messages]);
-      console.log(newHost);
       setNewHost(newHost);
     });
 
@@ -134,9 +127,7 @@ const Lobby = () => {
     const io = require("socket.io-client");
     const serverEndpoint = "https://quiz-game-api-io.herokuapp.com/";
     const newSocket = io(serverEndpoint);
-    newSocket.on("connected", (msg) => {
-      console.log(msg);
-    });
+    newSocket.on("connected", (msg) => {});
     if (socket === null) setSocket(newSocket);
     dispatch(initSocket(newSocket));
 
@@ -160,7 +151,6 @@ const Lobby = () => {
   };
 
   const leaveLobby = (socket) => {
-    console.log(lobbyId);
     setPlayers((players) => players.filter((p) => p.id !== currentPlayer.id));
     socket.emit("leave-lobby", {
       lobbyId: lobbyId,
