@@ -8,12 +8,16 @@ const Leaderboard = () => {
   const [leaderboardData, setLeaderboardData] = useState([]);
 
   useEffect(() => {
-    axios.get("http://localhost:3000/users/leaderboard").then((response) => {
-      console.log(response.data.users);
-      setLeaderboardData(
-        response.data.users.filter((user) => !(!user.score && user.score !== 0))
-      );
-    });
+    axios
+      .get("https://quiz-game-api-db.herokuapp.com/users/leaderboard")
+      .then((response) => {
+        console.log(response.data.users);
+        setLeaderboardData(
+          response.data.users.filter(
+            (user) => !(!user.score && user.score !== 0)
+          )
+        );
+      });
   }, []);
 
   const leaderboard = leaderboardData.map((data) => (

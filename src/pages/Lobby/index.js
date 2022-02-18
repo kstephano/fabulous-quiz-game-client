@@ -132,7 +132,7 @@ const Lobby = () => {
 
   useEffect(() => {
     const io = require("socket.io-client");
-    const serverEndpoint = "http://localhost:4000";
+    const serverEndpoint = "https://quiz-game-api-io.herokuapp.com/";
     const newSocket = io(serverEndpoint);
     newSocket.on("connected", (msg) => {
       console.log(msg);

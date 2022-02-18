@@ -65,10 +65,12 @@ const Game = () => {
 
   useEffect(() => {
     console.log(playerId);
-    axios.get(`http://localhost:3000/users/at/${playerId}`).then((response) => {
-      setPlayer(response.data.user);
-      console.log(response.data.user);
-    });
+    axios
+      .get(`https://quiz-game-api-db.herokuapp.com/users/at/${playerId}`)
+      .then((response) => {
+        setPlayer(response.data.user);
+        console.log(response.data.user);
+      });
   }, [isGameLoaded]);
 
   useEffect(() => {

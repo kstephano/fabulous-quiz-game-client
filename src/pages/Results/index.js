@@ -14,14 +14,16 @@ const Results = () => {
 
   useEffect(() => {
     console.log(lobbyId);
-    axios.get(`http://localhost:3000/users/${lobbyId}`).then((response) => {
-      const data = response.data.users;
-      const userResults = data.map((user) => ({
-        username: user.username,
-        score: (user.score / 100) * numOfQuestions,
-      }));
-      setResults(userResults);
-    });
+    axios
+      .get(`https://quiz-game-api-db.herokuapp.com/users/${lobbyId}`)
+      .then((response) => {
+        const data = response.data.users;
+        const userResults = data.map((user) => ({
+          username: user.username,
+          score: (user.score / 100) * numOfQuestions,
+        }));
+        setResults(userResults);
+      });
   }, []);
 
   const position = (num) => {
